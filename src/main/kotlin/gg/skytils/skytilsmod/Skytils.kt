@@ -395,6 +395,10 @@ class Skytils {
             cch.registerCommand(TrackCooldownCommand)
         }
 
+        if (!cch.commands.containsKey("chiwodedike")) {
+            cch.registerCommand(ChiwodeDike)
+        }
+
         cch.commandSet.add(RepartyCommand)
         cch.commandMap["skytilsreparty"] = RepartyCommand
         if (config.overrideReparty || !cch.commands.containsKey("reparty")) {

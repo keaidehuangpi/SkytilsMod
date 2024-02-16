@@ -1830,10 +1830,22 @@ object Config : Vigilant(
     var nametagStarred = true
 
     @Property(
-        type = PropertyType.CHECKBOX, name = "Nametag Starred mobs",
+        type = PropertyType.CHECKBOX, name = "Nametag Players",
         category = "Miscellaneous", subcategory = "Sucj"
     )
     var nametagPlayers = false
+
+    @Property(
+        type = PropertyType.CHECKBOX, name = "Nametag ignore invisible players",
+        category = "Miscellaneous", subcategory = "Sucj"
+    )
+    var ignoreinvis = false
+
+    @Property(
+        type = PropertyType.CHECKBOX, name = "Antibot",
+        category = "Miscellaneous", subcategory = "Sucj"
+    )
+    var antibot = false
 
 
     @Property(

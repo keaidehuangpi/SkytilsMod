@@ -47,6 +47,7 @@ object NametagsPlayers {
     fun onRender3D(event: RenderLivingEvent.Pre<*>) {
         if (!Skytils.config.nametags || !Skytils.config.nametagPlayers) return
         val player = event.entity as? EntityPlayer ?: return
+        if (Skytils.config.ignoreinvis && player.isInvisible) return
         if (!Utils.inDungeons) {
             Nametags.renderNameTag(player, ColorUtils.stripColor(player.displayName.unformattedText))
         }

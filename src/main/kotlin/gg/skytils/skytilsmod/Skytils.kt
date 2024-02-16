@@ -345,7 +345,7 @@ class Skytils {
             Waypoints,
             MouseHelperHook,
             Projectiles,
-            Nametags
+            NametagsPlayers
         ).forEach(MinecraftForge.EVENT_BUS::register)
     }
 

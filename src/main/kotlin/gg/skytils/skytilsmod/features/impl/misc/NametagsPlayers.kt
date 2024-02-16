@@ -22,10 +22,9 @@ import gg.skytils.skytilsmod.Skytils
 import gg.skytils.skytilsmod.listeners.DungeonListener
 import gg.skytils.skytilsmod.utils.Utils
 import gg.skytils.skytilsmod.utils.cheats.Nametags
-import net.ccbluex.liquidbounce.utils.render.ColorUtils
+import gg.skytils.skytilsmod.utils.cheats.ColorUtils
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraftforge.client.event.RenderLivingEvent
-import net.minecraftforge.client.event.RenderPlayerEvent
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 

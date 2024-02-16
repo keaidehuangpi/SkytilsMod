@@ -1,5 +1,4 @@
-
-package net.ccbluex.liquidbounce.utils.render
+package gg.skytils.skytilsmod.utils.cheats
 
 
 import net.minecraft.util.ChatAllowedCharacters

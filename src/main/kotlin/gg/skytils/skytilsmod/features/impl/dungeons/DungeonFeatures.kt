@@ -40,7 +40,7 @@ import gg.skytils.skytilsmod.utils.graphics.colors.CommonColors
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import net.ccbluex.liquidbounce.utils.render.ColorUtils
+import gg.skytils.skytilsmod.utils.cheats.ColorUtils
 import net.minecraft.block.BlockStainedGlass
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.gui.GuiScreen

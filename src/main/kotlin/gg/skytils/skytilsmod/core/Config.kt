@@ -1854,6 +1854,21 @@ object Config : Vigilant(
     var antibot = false
 
     @Property(
+        type = PropertyType.CHECKBOX, name = "Chest Open announce",
+        description = "Say something when you open a kuudra chest.",
+        category = "Kuudra", subcategory = "Other"
+    )
+    var chestAnnounce = false
+
+    @Property(
+        type = PropertyType.PARAGRAPH, name = "Message for opening kuudra chest",
+        description = "Customize the message sent on opening kuudra chest.",
+        category = "Kuudra", subcategory = "Other",
+        placeholder = "Skytils > Kuudra chest opened and im r."
+    )
+    var messageChestAnnounce = ""
+
+    @Property(
         type = PropertyType.SWITCH, name = "Scam Check",
         description = "Check if the other party is a known scammer when trading.\nThis relies on databases not controlled by Skytils and may not contain all scammers.",
         category = "Miscellaneous", subcategory = "Other"

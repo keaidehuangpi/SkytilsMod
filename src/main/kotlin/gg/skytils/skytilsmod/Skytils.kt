@@ -27,6 +27,7 @@ import gg.skytils.skytilsmod.commands.stats.impl.SlayerCommand
 import gg.skytils.skytilsmod.core.*
 import gg.skytils.skytilsmod.events.impl.MainReceivePacketEvent
 import gg.skytils.skytilsmod.events.impl.PacketEvent
+import gg.skytils.skytilsmod.features.impl.crimson.ChestAnnounce
 import gg.skytils.skytilsmod.features.impl.crimson.HideNonNametagMobs
 import gg.skytils.skytilsmod.features.impl.crimson.TrophyFish
 import gg.skytils.skytilsmod.features.impl.dungeons.*
@@ -344,7 +345,8 @@ class Skytils {
             Waypoints,
             MouseHelperHook,
             Projectiles,
-            NametagsPlayers
+            NametagsPlayers,
+            ChestAnnounce
         ).forEach(MinecraftForge.EVENT_BUS::register)
     }
 

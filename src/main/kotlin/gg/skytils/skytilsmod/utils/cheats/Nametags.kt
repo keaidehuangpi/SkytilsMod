@@ -18,6 +18,7 @@
 
 package gg.skytils.skytilsmod.utils.cheats
 
+import gg.skytils.skytilsmod.Skytils
 import gg.skytils.skytilsmod.Skytils.Companion.mc
 import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorMinecraft
 import gg.skytils.skytilsmod.utils.RenderUtil
@@ -28,7 +29,10 @@ import org.lwjgl.opengl.GL11.*
 import java.awt.Color
 
 object Nametags {
-    public fun renderNameTag(entity: EntityLivingBase, tag: String) {
+    fun renderNameTag(entity: EntityLivingBase, tag: String) {
+        if (Skytils.config.ignoreself && mc.thePlayer.uniqueID.equals(entity.uniqueID)) {
+            return
+        }
 
         // Set fontrenderer local
         val fontRenderer = mc.fontRendererObj

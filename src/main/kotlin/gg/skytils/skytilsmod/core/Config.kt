@@ -1810,7 +1810,7 @@ object Config : Vigilant(
 
     @Property(
         type = PropertyType.SWITCH, name = "Antiblind",
-        description = "Makes you immune to blind caused my potion effect/pumpkin head.",
+        description = "Makes you immune to blind caused by pumpkin head.",
         category = "Miscellaneous", subcategory = "Sucj",
     )
     var antiblind = true
@@ -1842,11 +1842,16 @@ object Config : Vigilant(
     var ignoreinvis = false
 
     @Property(
+        type = PropertyType.CHECKBOX, name = "Nametag ignore self",
+        category = "Miscellaneous", subcategory = "Sucj"
+    )
+    var ignoreself = false
+
+    @Property(
         type = PropertyType.CHECKBOX, name = "Antibot",
         category = "Miscellaneous", subcategory = "Sucj"
     )
     var antibot = false
-
 
     @Property(
         type = PropertyType.SWITCH, name = "Scam Check",
@@ -3131,13 +3136,26 @@ object Config : Vigilant(
         addDependency("changeToSameColorMode", "changeAllSameColorTerminalSolver")
         addDependency("lividFinderType", "findCorrectLivid")
         addDependency("predictAlignmentClicks", "alignmentTerminalSolver")
-        addDependency("predictSimonClicks", "simonSaysSolver")
+
+        addDependency("messageChestAnnounce", "chestAnnounce")
+
 
         listOf(
             "emptyBurrowColor",
             "mobBurrowColor",
             "treasureBurrowColor"
         ).forEach { propertyName -> addDependency(propertyName, "showGriffinBurrows") }
+        listOf(
+            "chinaHattrd",
+            "chinaHatColor",
+            "chinaHatRainbow"
+        ).forEach { propertyName -> addDependency(propertyName, "chinaHat") }
+        listOf(
+            "nametagStarred",
+            "nametagPlayers",
+            "ignoreinvis",
+            "ignoreself"
+        ).forEach { propertyName -> addDependency(propertyName, "nametags") }
 
         addDependency("activePetColor", "highlightActivePet")
         addDependency("favoritePetColor", "highlightFavoritePets")

@@ -27,7 +27,7 @@ import gg.skytils.skytilsmod.commands.stats.impl.SlayerCommand
 import gg.skytils.skytilsmod.core.*
 import gg.skytils.skytilsmod.events.impl.MainReceivePacketEvent
 import gg.skytils.skytilsmod.events.impl.PacketEvent
-import gg.skytils.skytilsmod.features.impl.crimson.KuudraFeatures
+import gg.skytils.skytilsmod.features.impl.crimson.HideNonNametagMobs
 import gg.skytils.skytilsmod.features.impl.crimson.TrophyFish
 import gg.skytils.skytilsmod.features.impl.dungeons.*
 import gg.skytils.skytilsmod.features.impl.dungeons.solvers.*
@@ -64,7 +64,6 @@ import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorCommandHandle
 import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorGuiStreamUnavailable
 import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorSettingsGui
 import gg.skytils.skytilsmod.utils.*
-import gg.skytils.skytilsmod.utils.cheats.Nametags
 import gg.skytils.skytilsmod.utils.graphics.ScreenRenderer
 import gg.skytils.skytilsmod.utils.graphics.colors.CustomColor
 import io.ktor.client.*
@@ -299,7 +298,7 @@ class Skytils {
             IcePathSolver,
             ItemFeatures,
             KeyShortcuts,
-            KuudraFeatures,
+            HideNonNametagMobs,
             LockOrb,
             MasterMode7Features,
             MayorDiana,

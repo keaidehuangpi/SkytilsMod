@@ -29,6 +29,7 @@ import gg.skytils.skytilsmod.events.impl.MainReceivePacketEvent
 import gg.skytils.skytilsmod.events.impl.PacketEvent
 import gg.skytils.skytilsmod.features.impl.crimson.ChestAnnounce
 import gg.skytils.skytilsmod.features.impl.crimson.HideNonNametagMobs
+import gg.skytils.skytilsmod.features.impl.crimson.KuudraJoinAnnounce
 import gg.skytils.skytilsmod.features.impl.crimson.TrophyFish
 import gg.skytils.skytilsmod.features.impl.dungeons.*
 import gg.skytils.skytilsmod.features.impl.dungeons.solvers.*
@@ -346,7 +347,8 @@ class Skytils {
             MouseHelperHook,
             Projectiles,
             NametagsPlayers,
-            ChestAnnounce
+            ChestAnnounce,
+            KuudraJoinAnnounce
         ).forEach(MinecraftForge.EVENT_BUS::register)
     }
 

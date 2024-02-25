@@ -1869,6 +1869,21 @@ object Config : Vigilant(
     var messageChestAnnounce = ""
 
     @Property(
+        type = PropertyType.CHECKBOX, name = "Kuudra join announce",
+        description = "Say something when you join a Kuudra party through party finder.\nUsually to announce the route you play.",
+        category = "Kuudra", subcategory = "Other"
+    )
+    var kuudraJoinAnnounce = false
+
+    @Property(
+        type = PropertyType.PARAGRAPH, name = "Message for joining Kuudra party",
+        description = "Customize the message sent on opening kuudra chest.",
+        category = "Kuudra", subcategory = "Other",
+        placeholder = "SkytilsAnnouncer > dps"
+    )
+    var messageKJA = ""
+
+    @Property(
         type = PropertyType.SWITCH, name = "Scam Check",
         description = "Check if the other party is a known scammer when trading.\nThis relies on databases not controlled by Skytils and may not contain all scammers.",
         category = "Miscellaneous", subcategory = "Other"

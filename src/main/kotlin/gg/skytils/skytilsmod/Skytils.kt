@@ -405,6 +405,9 @@ class Skytils {
         if (!cch.commands.containsKey("chiwodedike")) {
             cch.registerCommand(ChiwodeDike)
         }
+        if (!cch.commands.containsKey("tyfrs")) {
+            cch.registerCommand(TYFRSCommand)
+        }
 
         cch.commandSet.add(RepartyCommand)
         cch.commandMap["skytilsreparty"] = RepartyCommand

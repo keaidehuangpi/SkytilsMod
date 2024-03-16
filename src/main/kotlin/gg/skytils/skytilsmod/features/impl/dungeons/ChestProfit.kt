@@ -25,6 +25,7 @@ import gg.skytils.skytilsmod.core.structure.GuiElement
 import gg.skytils.skytilsmod.events.impl.GuiContainerEvent
 import gg.skytils.skytilsmod.features.impl.handlers.AuctionData
 import gg.skytils.skytilsmod.features.impl.misc.ItemFeatures
+import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorGuiContainer
 import gg.skytils.skytilsmod.utils.*
 import gg.skytils.skytilsmod.utils.NumberUtil.romanToDecimal
 import gg.skytils.skytilsmod.utils.RenderUtil.highlight
@@ -86,7 +87,10 @@ object ChestProfit {
                     chestType.items.add(DungeonChestLootItem(lootSlot, value))
                 }
             }
+            GlStateManager.pushMatrix()
+            GlStateManager.translate((-(event.gui as AccessorGuiContainer).guiLeft).toDouble(), -event.gui.guiTop.toDouble(), 299.0)
             drawChestProfit(chestType)
+            GlStateManager.popMatrix()
         } else if (croesusChestRegex.matches(event.chestName)) {
             for (i in 10..16) {
                 val openChest = inv.getStackInSlot(i) ?: continue
@@ -312,7 +316,7 @@ object ChestProfit {
         override val height: Int
             get() = ScreenRenderer.fontRenderer.FONT_HEIGHT * DungeonChest.entries.size
         override val width: Int
-            get() = ScreenRenderer.fontRenderer.getStringWidth("Obsidian Chest: 300M")
+            get() = ScreenRenderer.fontRenderer.getStringWidth("Obsidian Chest: +300M")
 
         override val toggled: Boolean
             get() = Skytils.config.dungeonChestProfit

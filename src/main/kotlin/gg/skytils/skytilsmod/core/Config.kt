@@ -266,7 +266,7 @@ object Config : Vigilant(
         if (ModChecker.canShowNotifications) {
             EssentialAPI.getNotifications().push("Dungeon Sweat", "Dungeon Sweat mode ${SuperSecretSettings.azooPuzzoo}")
         } else {
-            UChat.chat("${Skytils.prefix} §bDungeon Sweat mode ${SuperSecretSettings.azooPuzzoo}");
+            UChat.chat("${Skytils.prefix} §bDungeon Sweat mode ${SuperSecretSettings.azooPuzzoo}")
         }
         UDesktop.browse(URI.create("https://l.skytils.gg/dungeonsweatsonly"))
     }
@@ -1865,9 +1865,8 @@ object Config : Vigilant(
         type = PropertyType.PARAGRAPH, name = "Message for opening kuudra chest",
         description = "Customize the message sent on opening kuudra chest.",
         category = "Kuudra", subcategory = "Other",
-        placeholder = "Skytils > Kuudra chest opened and im r."
     )
-    var messageChestAnnounce = ""
+    var messageChestAnnounce = "Skytils > Kuudra chest opened and im r."
 
     @Property(
         type = PropertyType.CHECKBOX, name = "Kuudra join announce",
@@ -1880,9 +1879,8 @@ object Config : Vigilant(
         type = PropertyType.PARAGRAPH, name = "Message for joining Kuudra party",
         description = "Customize the message sent on opening kuudra chest.",
         category = "Kuudra", subcategory = "Other",
-        placeholder = "SkytilsAnnouncer > dps"
     )
-    var messageKJA = ""
+    var messageKJA = "SkytilsAnnouncer > class not specified!"
 
     @Property(
         type = PropertyType.SWITCH, name = "Scam Check",

@@ -23,7 +23,7 @@ import gg.skytils.skytilsmod.commands.BaseCommand
 import net.minecraft.client.entity.EntityPlayerSP
 import java.util.*
 
-object TYFRSCommand : BaseCommand("tyfrs") {
+object TYFRSCommand : BaseCommand("tyfrs", listOf("tyfrs", "tyfr")) {
     override fun processCommand(player: EntityPlayerSP, args: Array<String>) {
         Skytils.sendMessageQueue.add("/pc tyfrs")
         Timer().schedule(object : TimerTask() {

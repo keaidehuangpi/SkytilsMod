@@ -3140,6 +3140,35 @@ object Config : Vigilant(
     )
     var everythingBlock=false
 
+    @Property(
+        type = PropertyType.SWITCH, name = "BigGod",
+        description = "dashen.",
+        category = "General", subcategory = "Other",
+    )
+    var bigGod=false
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Other entities",
+        description = "not only players.",
+        category = "General", subcategory = "Other",
+    )
+    var bigGodOtherEntities=false
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Through walls",
+        description = "very dangerous!",
+        category = "General", subcategory = "Other",
+    )
+    var bigGodThruWalls=false
+
+    @Property(
+        type = PropertyType.SELECTOR, name = "Head",
+        description = "Who do u want to use?",
+        category = "General", subcategory = "Other",
+        options = ["FengZhiyuan", "GanGa","GaoChongPo","SunXiaoChuan","SunZheng","WangHang"]
+    )
+    var bigGodUseHead = 0
+
 
 
     init {
@@ -3219,6 +3248,12 @@ object Config : Vigilant(
             "everythingBlock",
             "swingSpeed",
         ).forEach { propertyName -> addDependency(propertyName, "animations") }
+        listOf(
+            "bigGodUseHead",
+            "bigGodThruWalls",
+            "bigGodOtherEntities",
+        ).forEach { propertyName -> addDependency(propertyName, "bigGod") }
+
 
         addDependency("activePetColor", "highlightActivePet")
         addDependency("favoritePetColor", "highlightFavoritePets")

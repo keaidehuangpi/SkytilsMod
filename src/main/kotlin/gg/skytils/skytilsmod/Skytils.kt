@@ -271,6 +271,7 @@ class Skytils {
             BetterStash,
             BlazeSolver,
             BloodHelper,
+            BigGod,
             BrewingFeatures,
             BossHPDisplays,
             BoulderSolver,

@@ -3118,36 +3118,7 @@ object Config : Vigilant(
         description = "Who do u want to use?",
         category = "General", subcategory = "Other",
         options = [
-            "Vanilla",
-            "1.7",
-            "Swang",
-            "Swank",
-            "Swong",
-            "Sigma",
-            "Jello",
-            "Slide",
-            "Ohare",
-            "Wizzard",
-            "Lennox",
-            "Leaked",
-            "Butter",
-            "Lucky",
-            "Long Hit",
-            "Tiny Whack",
-            "Skid",
-            "Slide2",
-            "Mix",
-            "SlideT",
-            "SlideA",
-            "Epic",
-            "Punch",
-            "Debug",
-            "Luna",
-            "Jigsaw",
-            "Hanabi",
-            "Chill",
-            "Avatar",
-            "Push"
+            "Akrien","Avatar","ETB","Exhibition","Push","Reverse","Shield","SigmaNew","SigmaOld","Slide","SlideDown","Swong","VisionFX","Swank","Jello","HSlide","None","Rotate","Liquid"
         ]
     )
     var animationsMode=0

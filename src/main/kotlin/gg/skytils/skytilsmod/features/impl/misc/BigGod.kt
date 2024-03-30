@@ -54,6 +54,9 @@ object BigGod {
 
     @SubscribeEvent
     fun onRenderPlayerPost(e: RenderLivingEvent.Post<EntityPlayer?>) {
+        if(!Config.bigGod){
+            return
+        }
         if ((e.entity !is EntityPlayer) && !Config.bigGodOtherEntities) {
             return
         }

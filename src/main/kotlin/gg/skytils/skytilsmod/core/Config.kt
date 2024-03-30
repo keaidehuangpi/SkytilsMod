@@ -3114,6 +3114,75 @@ object Config : Vigilant(
     var animations=true
 
     @Property(
+        type = PropertyType.SELECTOR, name = "Block Animation",
+        description = "Who do u want to use?",
+        category = "General", subcategory = "Other",
+        options = [
+            "Vanilla",
+            "1.7",
+            "Swang",
+            "Swank",
+            "Swong",
+            "Sigma",
+            "Jello",
+            "Slide",
+            "Ohare",
+            "Wizzard",
+            "Lennox",
+            "Leaked",
+            "Butter",
+            "Lucky",
+            "Long Hit",
+            "Tiny Whack",
+            "Skid",
+            "Slide2",
+            "Mix",
+            "SlideT",
+            "SlideA",
+            "Epic",
+            "Punch",
+            "Debug",
+            "Luna",
+            "Jigsaw",
+            "Hanabi",
+            "Chill",
+            "Avatar",
+            "Push"
+        ]
+    )
+    var animationsMode=0
+
+    @Property(
+        type = PropertyType.DECIMAL_SLIDER, name = "Block Pos X",
+        description = "Changes the x coord of the animation location when blocking",
+        category = "General", subcategory = "Other",
+        minF = -1.0F,
+        maxF = 1.0F,
+        decimalPlaces = 2
+    )
+    var blockPosX = 0.0F
+
+    @Property(
+        type = PropertyType.DECIMAL_SLIDER, name = "Block Pos Y",
+        description = "Changes the y coord of the animation location when blocking",
+        category = "General", subcategory = "Other",
+        minF = -1.0F,
+        maxF = 1.0F,
+        decimalPlaces = 2
+    )
+    var blockPosY = 0.0F
+
+    @Property(
+        type = PropertyType.DECIMAL_SLIDER, name = "Block Pos Z",
+        description = "Changes the z coord of the animation location when blocking",
+        category = "General", subcategory = "Other",
+        minF = -1.0F,
+        maxF = 1.0F,
+        decimalPlaces = 2
+    )
+    var blockPosZ = 0.0F
+
+    @Property(
         type = PropertyType.DECIMAL_SLIDER, name = "Swing Speed",
         description = "Changes swing speed",
         category = "General", subcategory = "Other",
@@ -3247,6 +3316,7 @@ object Config : Vigilant(
             "itemScale",
             "everythingBlock",
             "swingSpeed",
+            "animationsMode"
         ).forEach { propertyName -> addDependency(propertyName, "animations") }
         listOf(
             "bigGodUseHead",

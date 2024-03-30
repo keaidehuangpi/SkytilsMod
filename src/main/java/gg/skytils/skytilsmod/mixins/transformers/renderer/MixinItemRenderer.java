@@ -118,11 +118,7 @@ public abstract class MixinItemRenderer {
         GL11.glScalef(scale, scale, scale);
 
     }
-    private void renderingBlockeddd(float swingProgress, float equippedProgress) {
-            this.transformFirstPersonItem(swingProgress, 0.0F);
-            this.doBlockTransformations();
 
-    }
 
 
     /**
@@ -168,7 +164,7 @@ public abstract class MixinItemRenderer {
                         break;
 
                     case BLOCK:
-                        renderingBlockeddd(f, f1);
+                        renderingBlocked(f, f1);
                         break;
 
                     case BOW:
@@ -179,7 +175,7 @@ public abstract class MixinItemRenderer {
                 if ((
                         this.mc.gameSettings.keyBindUseItem.isKeyDown())
                         && Config.INSTANCE.getEverythingBlock()) {
-                    renderingBlockeddd(f, f1);
+                    renderingBlocked(f, f1);
                 } else {
                     this.doItemUsedTransformations(f1);
                     this.transformFirstPersonItem(f, f1);
@@ -196,4 +192,236 @@ public abstract class MixinItemRenderer {
         GlStateManager.disableRescaleNormal();
         RenderHelper.disableStandardItemLighting();
     }
+
+    private void renderingBlocked(float swingProgress, float equippedProgress) {
+        final float hand = MathHelper.sin(MathHelper.sqrt_float(equippedProgress) * (float)Math.PI);
+
+
+        if (!Config.INSTANCE.getAnimations()) {
+            this.transformFirstPersonItem(swingProgress, 0.0F);
+            this.doBlockTransformations();
+        } else {
+            GL11.glTranslated(Config.INSTANCE.getBlockPosX(), Config.INSTANCE.getBlockPosY(), Config.INSTANCE.getBlockPosZ());
+            if (Config.INSTANCE.getAnimationsMode()==(6)) {
+                this.transformFirstPersonItem(equippedProgress, 0.0f);
+                float swong = MathHelper.sin((float) (MathHelper.sqrt_float(swingProgress) * Math.PI));
+                GlStateManager.rotate(-swong * 55 / 2.0F, -8.0F, -0.0F, 9.0F);
+                GlStateManager.rotate(-swong * 45, 1.0F, swong/2, -0.0F);
+                this.doBlockTransformations();
+                GL11.glTranslated(1.2, 0.3,0.5);
+                GL11.glTranslatef(-1, this.mc.thePlayer.isSneaking() ? -0.1F : -0.2F, 0.2F);
+            } else if (Config.INSTANCE.getAnimationsMode()==23) {
+                this.transformFirstPersonItem(0.2f, equippedProgress);
+                this.doBlockTransformations();
+                GlStateManager.translate(-0.5, 0.2, 0.0);
+            } else if (Config.INSTANCE.getAnimationsMode()==0) {
+                this.transformFirstPersonItem(swingProgress, 0.0F);
+                this.doBlockTransformations();
+            } else if (Config.INSTANCE.getAnimationsMode()==24) {
+                this.transformFirstPersonItem(swingProgress, 0.0F);
+                this.doBlockTransformations();
+                final float sin2 = MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * Math.PI));
+                GlStateManager.scale(1.0f, 1.0f, 1.0f);
+                GlStateManager.translate(-0.2f, 0.45f, 0.25f);
+                GlStateManager.rotate(-sin2 * 20.0f, -5.0f, -5.0f, 9.0f);
+            } else if (Config.INSTANCE.getAnimationsMode()==1) {
+                this.transformFirstPersonItem(swingProgress - 0.3F, equippedProgress);
+                this.doBlockTransformations();
+            } else if (Config.INSTANCE.getAnimationsMode()==2) {
+                this.transformFirstPersonItem(swingProgress / 2.0F, equippedProgress);
+                float var15;
+                var15 = MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * Math.PI));
+                GlStateManager.rotate(var15 * 30.0F / 2.0F, -var15, -0.0F, 9.0F);
+                GlStateManager.rotate(var15 * 40.0F, 1.0F, -var15 / 2.0F, -0.0F);
+
+                this.doBlockTransformations();
+            } else if (Config.INSTANCE.getAnimationsMode()==3) {
+                this.transformFirstPersonItem(swingProgress / 2.0F, equippedProgress);
+                float var15;
+                var15 = MathHelper.sin((float) (MathHelper.sqrt_float(swingProgress) * Math.PI));
+                GlStateManager.rotate(var15 * 30.0F, -var15, -0.0F, 9.0F);
+                GlStateManager.rotate(var15 * 40.0F, 1.0F, -var15, -0.0F);
+
+                this.doBlockTransformations();
+            } else if (Config.INSTANCE.getAnimationsMode()==4) {
+                this.transformFirstPersonItem(swingProgress / 2.0F, 0.0F);
+                float var151 = MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * Math.PI));
+                GlStateManager.rotate(-var151 * 40.0F / 2.0F, var151 / 2.0F, -0.0F, 9.0F);
+                GlStateManager.rotate(-var151 * 30.0F, 1.0F, var151 / 2.0F, -0.0F);
+
+                this.doBlockTransformations();
+            } else if (Config.INSTANCE.getAnimationsMode()==25) {
+                this.transformFirstPersonItem(0.1f, equippedProgress);
+                this.doBlockTransformations();
+                GlStateManager.translate(-0.5, 0, 0);
+            } else if (Config.INSTANCE.getAnimationsMode()==26) {
+                this.transformFirstPersonItem(0.1f, equippedProgress);
+                this.doBlockTransformations();
+                float var15 = MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * Math.PI));
+                GlStateManager.translate(-0.0f, -0.3f, 0.4f);
+                GlStateManager.rotate((-var15) * 22.5f, -9.0f, -0.0f, 9.0f);
+                GlStateManager.rotate((-var15) * 10.0f, 1.0f, -0.4f, -0.5f);
+            } else if (Config.INSTANCE.getAnimationsMode()==6) {
+                GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
+                GlStateManager.translate(0.0F, 0 * -0.6F, 0.0F);
+                GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
+                float var3 = MathHelper.sin((float) (0.0F * 0.0F * Math.PI));
+                float var4 = MathHelper.sin((float) (MathHelper.sqrt_float(0.0F) * Math.PI));
+                GlStateManager.rotate(var3 * -20.0F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(var4 * -20.0F, 0.0F, 0.0F, 1.0F);
+                GlStateManager.rotate(var4 * -80.0F, 1.0F, 0.0F, 0.0F);
+                GlStateManager.scale(0.4F, 0.4F, 0.4F);
+
+                GlStateManager.translate(-0.5F, 0.2F, 0.0F);
+                GlStateManager.rotate(30.0F, 0.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(-80.0F, 1.0F, 0.0F, 0.0F);
+                GlStateManager.rotate(60.0F, 0.0F, 1.0F, 0.0F);
+                int alpha = (int) Math.min(255,
+                        ((System.currentTimeMillis() % 255) > 255 / 2
+                                ? (Math.abs(Math.abs(System.currentTimeMillis()) % 255 - 255))
+                                : System.currentTimeMillis() % 255) * 2);
+                GlStateManager.translate(0.3f, -0.0f, 0.40f);
+                GlStateManager.rotate(0.0f, 0.0f, 0.0f, 1.0f);
+                GlStateManager.translate(0, 0.5f, 0);
+
+                GlStateManager.rotate(90, 1.0f, 0.0f, -1.0f);
+                GlStateManager.translate(0.6f, 0.5f, 0);
+                GlStateManager.rotate(-90, 1.0f, 0.0f, -1.0f);
+
+                GlStateManager.rotate(-10, 1.0f, 0.0f, -1.0f);
+                GlStateManager.rotate(mc.thePlayer.isSwingInProgress ? -alpha / 5f : 1, 1.0f, -0.0f, 1.0f);
+            } else if (Config.INSTANCE.getAnimationsMode()==27) {
+                this.transformFirstPersonItem(swingProgress / 2.0f - 0.18f, 0.0f);
+                GL11.glRotatef(hand * 60.0f / 2.0f, -hand / 2.0f, -0.0f, -16.0f);
+                GL11.glRotatef(-hand * 30.0f, 1.0f, hand / 2.0f, -1.0f);
+                this.doBlockTransformations();
+            } else if (Config.INSTANCE.getAnimationsMode()==15) {
+                this.transformFirstPersonItem(swingProgress / 2.0f - 0.18f, 0.0f);
+                GL11.glRotatef(-hand * 40.0f / 2.0f, hand / 2.0f, -0.0f, 9.0f);
+                GL11.glRotatef(-hand * 30.0f, 1.0f, hand / 2.0f, -0.0f);
+                this.doBlockTransformations();
+            } else if (Config.INSTANCE.getAnimationsMode()==14) {
+                this.transformFirstPersonItem(swingProgress, 0.0f);
+                this.doBlockTransformations();
+                final float var19 = MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * Math.PI));
+                GlStateManager.translate(-0.05f, 0.6f, 0.3f);
+                GlStateManager.rotate(-var19 * 70.0f / 2.0f, -8.0f, -0.0f, 9.0f);
+                GlStateManager.rotate(-var19 * 70.0f, 1.5f, -0.4f, -0.0f);
+            } else if (Config.INSTANCE.getAnimationsMode()==12) {
+                this.transformFirstPersonItem(swingProgress * 0.5f, 0.0f);
+                GlStateManager.rotate(-hand * -74.0f / 4.0f, -8.0f, -0.0f, 9.0f);
+                GlStateManager.rotate(-hand * 15.0f, 1.0f, hand / 2.0f, -0.0f);
+                this.doBlockTransformations();
+                GL11.glTranslated(1.2, 0.3, 0.5);
+                GL11.glTranslatef(-1.0f, this.mc.thePlayer.isSneaking() ? -0.1f : -0.2f, 0.2f);
+            } else if (Config.INSTANCE.getAnimationsMode()==7) {
+                this.transformFirstPersonItem(0, 0.0f);
+                this.doBlockTransformations();
+                float var9 = MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * Math.PI));
+                GlStateManager.translate(-0.05f, -0.0f, 0.35f);
+                GlStateManager.rotate(-var9 * (float) 60.0 / 2.0f, -15.0f, -0.0f, 9.0f);
+                GlStateManager.rotate(-var9 * (float) 70.0, 1.0f, -0.4f, -0.0f);
+            } else if (Config.INSTANCE.getAnimationsMode()==13) {
+                this.transformFirstPersonItem(0, 0.0f);
+                this.doBlockTransformations();
+                float var9 = MathHelper.sin(MathHelper.sqrt_float(equippedProgress) * 0.3215927f);
+                GlStateManager.translate(-0.05f, -0.0f, 0.3f);
+                GlStateManager.rotate(-var9 * (float) 60.0 / 2.0f, -15.0f, -0.0f, 9.0f);
+                GlStateManager.rotate(-var9 * (float) 70.0, 1.0f, -0.4f, -0.0f);
+            } else if (Config.INSTANCE.getAnimationsMode()==8) {
+                float f6 = MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * Math.PI));
+                GL11.glTranslated(-0.05D, 0.0D, -0.25);
+                this.transformFirstPersonItem(swingProgress / 2, 0.0f);
+                GlStateManager.rotate(-f6 * 60.0F, 2.0F, -f6 * 2, -0.0f);
+                this.doBlockTransformations();
+            } else if (Config.INSTANCE.getAnimationsMode()==9) {
+                float f6 = MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * 3.1));
+                this.transformFirstPersonItem(swingProgress / 3, 0.0f);
+                GlStateManager.rotate(f6 * 30.0F / 1.0F, f6 / -1.0F, 1.0F, 0.0F);
+                GlStateManager.rotate(f6 * 10.0F / 10.0F, -f6 / -1.0F, 1.0F, 0.0F);
+                GL11.glTranslated(0.0D, 0.4D, 0.0D);
+                this.doBlockTransformations();
+            } else if (Config.INSTANCE.getAnimationsMode()==10) {
+                float f6 = MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * 3.1));
+                GL11.glTranslated(0.0D, 0.125D, -0.1D);
+                this.transformFirstPersonItem(swingProgress / 3, 0.0F);
+                GlStateManager.rotate(-f6 * 75.0F / 4.5F, f6 / 3.0F, -2.4F, 5.0F);
+                GlStateManager.rotate(-f6 * 75.0F, 1.5F, f6 / 3.0F, -0.0F);
+                GlStateManager.rotate(f6 * 72.5F / 2.25F, f6 / 3.0F, -2.7F, 5.0F);
+                this.doBlockTransformations();
+            } else if (Config.INSTANCE.getAnimationsMode()==11) {
+                this.transformFirstPersonItem(swingProgress, 0);
+                this.doBlockTransformations();
+                GlStateManager.rotate(-MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * Math.PI)) * 30.0F, 0.5F, 0.5F, 0);
+            } else if (Config.INSTANCE.getAnimationsMode()==28) {
+                this.avatar(swingProgress, equippedProgress);
+                this.doBlockTransformations();
+            } else if (Config.INSTANCE.getAnimationsMode()==29) {
+                this.transformFirstPersonItem(swingProgress, 0.0F);
+                this.doBlockTransformations();
+                GlStateManager.rotate(-MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * Math.PI)) * 35.0F, -8.0F, -0.0F, 9.0F);
+                GlStateManager.rotate(-MathHelper.sin((float) (MathHelper.sqrt_float(equippedProgress) * Math.PI)) * 10.0F, 1.0F, -0.4F, -0.5F);
+            }
+            else if (Config.INSTANCE.getAnimationsMode()==16) {
+                this.transformFirstPersonItem(swingProgress * 0.5f, 0.0f);
+                GlStateManager.rotate(-hand * 10.0f, 0.0f, 15.0f, 300.0f);
+                GlStateManager.rotate(-hand * 10.0f, 300.0f, hand / 2.0f, 1.0f);
+                this.doBlockTransformations();
+                GL11.glTranslated(1.2, 0.2, 0.1);
+                GL11.glTranslatef(-2.1f, -0.2f, 0.1f);
+            }
+            else if (Config.INSTANCE.getAnimationsMode()==17) {
+                this.transformFirstPersonItem(swingProgress, equippedProgress);
+                this.doBlockTransformations();
+                GL11.glTranslatef(0.1f, -0.1f, 0.3f);
+                GlStateManager.translate(0.1f, -0.1f, 0.4f);
+            }
+            else if (Config.INSTANCE.getAnimationsMode()==18) {
+                this.transformFirstPersonItem(swingProgress, equippedProgress / 40.0f);
+                this.doBlockTransformations();
+            }
+            else if (Config.INSTANCE.getAnimationsMode()==19) {
+                this.transformFirstPersonItem(swingProgress, 1.0f);
+                this.doBlockTransformations();
+                GL11.glTranslatef(0.6f, 0.3f, 0.7f);
+                final float slide = MathHelper.sin(equippedProgress * equippedProgress * 5.1415925f);
+                GlStateManager.translate(-0.52f, -0.1f, -0.2f);
+                GlStateManager.rotate(slide * -19.0f, 25.0f, -0.4f, -5.0f);
+            }
+            else if (Config.INSTANCE.getAnimationsMode()==20) {
+                this.transformFirstPersonItem(swingProgress * 0.5f, 0.0f);
+                GlStateManager.rotate(-hand * -74.0f / 4.0f, -8.0f, -0.0f, 9.0f);
+                GlStateManager.rotate(-hand * 15.0f, 1.0f, hand / 2.0f, -0.0f);
+                this.doBlockTransformations();
+                GL11.glTranslated(1.2, 0.3, 0.5);
+                GL11.glTranslatef(-1.0f, this.mc.thePlayer.isSneaking() ? -0.1f : -0.2f, 0.2f);
+            }
+            else if (Config.INSTANCE.getAnimationsMode()==21) {
+                this.transformFirstPersonItem(swingProgress, equippedProgress);
+                this.doBlockTransformations();
+                GlStateManager.translate(0.0f, 0.0f, 0.0f);
+                GlStateManager.rotate(5.0f, 50.0f, 100.0f, 50.0f);
+            }
+            else if (Config.INSTANCE.getAnimationsMode()==22) {
+                this.transformFirstPersonItem(swingProgress, 0.0f);
+                this.doBlockTransformations();
+                GlStateManager.translate(-0.0f, 0.4f, 0.1f);
+                GlStateManager.rotate(-hand * 35.0f, -8.0f, -0.0f, 9.0f);
+                GlStateManager.rotate(-hand * 10.0f, 1.0f, -0.4f, -0.5f);
+            }
+        }
+
+    }
+    private void avatar(float equipProgress, float swingProgress) {
+        GlStateManager.translate(0.56F, -0.52F, -0.71999997F);
+        GlStateManager.translate(0.0F, 0, 0.0F);
+        GlStateManager.rotate(45.0F, 0.0F, 1.0F, 0.0F);
+        float f = MathHelper.sin(swingProgress * swingProgress * (float) Math.PI);
+        float f1 = MathHelper.sin(MathHelper.sqrt_float(swingProgress) * (float) Math.PI);
+        GlStateManager.rotate(f * -20.0F, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotate(f1 * -20.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.rotate(f1 * -40.0F, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scale(0.4F, 0.4F, 0.4F);
+    }
+
 }

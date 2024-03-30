@@ -20,22 +20,13 @@ package gg.skytils.skytilsmod.commands.impl
 
 import gg.essential.universal.UChat
 import gg.skytils.skytilsmod.Skytils
-import gg.skytils.skytilsmod.Skytils.Companion.client
-import gg.skytils.skytilsmod.Skytils.Companion.mc
 import gg.skytils.skytilsmod.commands.BaseCommand
-import io.ktor.client.call.*
-import io.ktor.client.plugins.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import kotlinx.coroutines.launch
-import kotlinx.serialization.json.JsonObject
+import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
-import java.util.*
 
-object ChiwodeDike : BaseCommand("chiwodedike") {
+object FullBrightCommand : BaseCommand("chiwodedike") {
     override fun processCommand(player: EntityPlayerSP, args: Array<String>) {
         UChat.chat("${Skytils.failPrefix} §c闭上你的钢门。")
-        Skytils.sendMessageQueue.add("Skytils-SC > ${Skytils.config.message270Score.ifBlank { "270 score" }}")
+        Minecraft.getMinecraft().gameSettings.gammaSetting = 1000.0F;
     }
 }

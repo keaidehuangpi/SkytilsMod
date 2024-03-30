@@ -402,8 +402,8 @@ class Skytils {
             cch.registerCommand(TrackCooldownCommand)
         }
 
-        if (!cch.commands.containsKey("chiwodedike")) {
-            cch.registerCommand(ChiwodeDike)
+        if (!cch.commands.containsKey("fullbright")) {
+            cch.registerCommand(FullBrightCommand)
         }
         if (!cch.commands.containsKey("tyfrs")) {
             cch.registerCommand(TYFRSCommand)

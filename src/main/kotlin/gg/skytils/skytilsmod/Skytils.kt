@@ -286,6 +286,7 @@ class Skytils {
             CustomNotifications,
             ChinaHat,
             DamageSplash,
+            DMGParticle,
             DungeonFeatures,
             DungeonMap,
             DungeonTimer,

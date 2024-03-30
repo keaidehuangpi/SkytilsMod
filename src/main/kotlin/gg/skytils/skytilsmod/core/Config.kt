@@ -3138,7 +3138,7 @@ object Config : Vigilant(
         description = "woooooo!",
         category = "General", subcategory = "Other",
     )
-    var everythingBlock=true
+    var everythingBlock=false
 
 
 
@@ -3214,6 +3214,11 @@ object Config : Vigilant(
             "ignoreinvis",
             "ignoreself"
         ).forEach { propertyName -> addDependency(propertyName, "nametags") }
+        listOf(
+            "itemScale",
+            "everythingBlock",
+            "swingSpeed",
+        ).forEach { propertyName -> addDependency(propertyName, "animations") }
 
         addDependency("activePetColor", "highlightActivePet")
         addDependency("favoritePetColor", "highlightFavoritePets")

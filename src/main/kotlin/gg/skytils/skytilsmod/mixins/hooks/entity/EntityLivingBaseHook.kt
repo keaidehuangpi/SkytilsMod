@@ -18,9 +18,12 @@
 package gg.skytils.skytilsmod.mixins.hooks.entity
 
 import gg.skytils.skytilsmod.Skytils
+import gg.skytils.skytilsmod.core.Config.animations
+import gg.skytils.skytilsmod.core.Config.swingSpeed
 import gg.skytils.skytilsmod.features.impl.dungeons.WitherKingDragons
 import gg.skytils.skytilsmod.utils.SuperSecretSettings
 import gg.skytils.skytilsmod.utils.Utils
+import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.entity.player.EntityPlayer
@@ -76,5 +79,16 @@ class EntityLivingBaseHook(val entity: EntityLivingBase) {
 
     fun isChild(cir: CallbackInfoReturnable<Boolean>) {
         cir.returnValue = isSmol
+    }
+    fun getArmSwingAnimationEnd(cir: CallbackInfoReturnable<Int>){
+        var speed = if (entity.isPotionActive(Potion.digSpeed.id)) 6 - (1 + entity.getActivePotionEffect(Potion.digSpeed)
+            .getAmplifier()) else (if (entity.isPotionActive(
+                Potion.digSlowdown.id
+            )
+        ) 6 + (1 + entity.getActivePotionEffect(Potion.digSlowdown).getAmplifier()) * 2 else 6)
+        if ((entity.entityId == (Minecraft.getMinecraft().thePlayer.entityId)) && animations) {
+            speed = (speed * (swingSpeed)).toInt()
+        }
+        cir.setReturnValue(speed)
     }
 }

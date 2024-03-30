@@ -619,13 +619,6 @@ object Config : Vigilant(
     var showDungeonFloorAsStackSize = false
 
     @Property(
-        type = PropertyType.PERCENT_SLIDER, name = "Held Item Scale",
-        description = "Changes the size of your held item.",
-        category = "Miscellaneous", subcategory = "Items"
-    )
-    var itemScale = 1f
-
-    @Property(
         type = PropertyType.SWITCH, name = "Show Giant HP",
         description = "Shows the HP of Giants in your HUD.",
         category = "Dungeons", subcategory = "Quality of Life"
@@ -3112,6 +3105,42 @@ object Config : Vigilant(
         options = ["Normal", "Hidden", "Separate GUI"]
     )
     var windHider = 0
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Animations",
+        description = "sooooo fancy.",
+        category = "General", subcategory = "Other",
+    )
+    var animations=true
+
+    @Property(
+        type = PropertyType.DECIMAL_SLIDER, name = "Swing Speed",
+        description = "Changes swing speed",
+        category = "General", subcategory = "Other",
+        minF = 0.5F,
+        maxF = 5.0F,
+        decimalPlaces = 2
+    )
+    var swingSpeed = 1.0F
+
+    @Property(
+        type = PropertyType.DECIMAL_SLIDER, name = "Item Scale",
+        description = "Changes item scale",
+        category = "General", subcategory = "Other",
+        minF = 0.0F,
+        maxF = 2.0F,
+        decimalPlaces = 2
+    )
+    var itemScale = 0.7F
+
+    @Property(
+        type = PropertyType.SWITCH, name = "EverythingBlock",
+        description = "woooooo!",
+        category = "General", subcategory = "Other",
+    )
+    var everythingBlock=true
+
+
 
     init {
         addDependency("showEtherwarpTeleportPosColor", "showEtherwarpTeleportPos")

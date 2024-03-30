@@ -24,7 +24,7 @@ import gg.skytils.skytilsmod.commands.BaseCommand
 import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
 
-object FullBrightCommand : BaseCommand("chiwodedike") {
+object FullBrightCommand : BaseCommand("fullbright") {
     override fun processCommand(player: EntityPlayerSP, args: Array<String>) {
         UChat.chat("${Skytils.failPrefix} §c闭上你的钢门。")
         Minecraft.getMinecraft().gameSettings.gammaSetting = 1000.0F;

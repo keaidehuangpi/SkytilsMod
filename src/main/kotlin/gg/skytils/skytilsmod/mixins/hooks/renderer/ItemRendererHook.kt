@@ -31,13 +31,3 @@ fun getItemInUseCountForFirstPerson(player: AbstractClientPlayer, item: ItemStac
     return player.itemInUseCount
 }
 
-fun modifySize() {
-    val scale = Skytils.config.itemScale * if (SuperSecretSettings.twilightGiant) 5f else 1f
-    val matrixStack = UMatrixStack()
-    matrixStack.scale(scale, scale, scale)
-    if (scale < 1) {
-        val offset = 1 - scale
-        matrixStack.translate(-offset, offset, 0f)
-    }
-    matrixStack.applyToGlobalState()
-}

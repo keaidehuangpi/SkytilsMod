@@ -19,16 +19,19 @@
 package gg.skytils.skytilsmod.mixins.transformers.entity;
 
 import com.llamalad7.mixinextras.injector.WrapWithCondition;
-import gg.skytils.skytilsmod.Skytils;
+import gg.skytils.skytilsmod.core.Config;
 import gg.skytils.skytilsmod.mixins.extensions.ExtensionEntityLivingBase;
 import gg.skytils.skytilsmod.mixins.hooks.entity.EntityLivingBaseHook;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,6 +39,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(EntityLivingBase.class)
 public abstract class MixinEntityLivingBase extends Entity implements ExtensionEntityLivingBase {
+
+    @Shadow public abstract boolean isPotionActive(int potionId);
+
+    @Shadow public abstract PotionEffect getActivePotionEffect(Potion potionIn);
 
     @Unique
     private final EntityLivingBaseHook hook = new EntityLivingBaseHook((EntityLivingBase) (Object) this);
@@ -65,22 +72,13 @@ public abstract class MixinEntityLivingBase extends Entity implements ExtensionE
     }
 
     /**
-     * Why do I deprecate this?
-     * Simply disabling the effect will make the player able to sprint,
-     * which should not happen when blindness effect is active,
-     * and may be considered cheating by some of the anticheats?
-     * maybe.
-     * <p>
-     * Instead, I modified the fog.
-     * see MixinEntityRenderer.java for details.
+     * @author
+     * @reason
      */
-    /*@Inject(method = "isPotionActive(Lnet/minecraft/potion/Potion;)Z", at = @At("HEAD"), cancellable = true)
-    private void isPotionActive(Potion p_isPotionActive_1_, final CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-
-
-        if((p_isPotionActive_1_ == Potion.confusion || p_isPotionActive_1_ == Potion.blindness) && Skytils.Companion.getConfig().getAntiblind())
-            callbackInfoReturnable.setReturnValue(false);
-    }*/
+    @Inject(method = "getArmSwingAnimationEnd",at = @At("RETURN"), cancellable = true)
+    private void getArmSwingAnimationEnd(CallbackInfoReturnable<Integer> cir) {
+        hook.getArmSwingAnimationEnd(cir);
+    }
 
     @NotNull
     @Override

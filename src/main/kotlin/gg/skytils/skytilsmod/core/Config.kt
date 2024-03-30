@@ -3210,42 +3210,6 @@ object Config : Vigilant(
     var bigGodUseHead = 0
 
 
-    @Property(
-        type = PropertyType.SWITCH, name = "Damage Particles",
-        description = "shows damage as particles.",
-        category = "General", subcategory = "Other",
-    )
-    var dmgParticles=false
-
-    @Property(
-        type = PropertyType.SLIDER, name = "Alive Ticks",
-        description = "Damage particles alive ticks",
-        category = "General", subcategory = "Others",
-        min=10,
-        max = 50
-    )
-    var aliveTicks = 20
-
-    @Property(
-        type = PropertyType.SLIDER, name = "Size",
-        description = "Damage particles size",
-        category = "General", subcategory = "Others",
-        min=1,
-        max = 7
-    )
-    var dpSize = 3
-
-    @Property(
-        type = PropertyType.SLIDER, name = "Alpha",
-        description = "Damage particles alpha",
-        category = "General", subcategory = "Others",
-        min=0,
-        max = 255
-    )
-    var dpColorAlpha = 100
-
-
-
 
     init {
         addDependency("showEtherwarpTeleportPosColor", "showEtherwarpTeleportPos")
@@ -3330,11 +3294,6 @@ object Config : Vigilant(
             "bigGodThruWalls",
             "bigGodOtherEntities",
         ).forEach { propertyName -> addDependency(propertyName, "bigGod") }
-        listOf(
-            "aliveTicks",
-            "dpSize",
-            "dpColorAlpha",
-        ).forEach { propertyName -> addDependency(propertyName, "dmgParticles") }
 
 
         addDependency("activePetColor", "highlightActivePet")

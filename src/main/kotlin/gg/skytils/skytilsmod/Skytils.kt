@@ -21,6 +21,7 @@ package gg.skytils.skytilsmod
 import gg.essential.api.EssentialAPI
 import gg.essential.universal.UChat
 import gg.essential.universal.UKeyboard
+import gg.skytils.skytilsmod.cape.GuiCapeManager
 import gg.skytils.skytilsmod.commands.impl.*
 import gg.skytils.skytilsmod.commands.stats.impl.CataCommand
 import gg.skytils.skytilsmod.commands.stats.impl.SlayerCommand
@@ -144,6 +145,7 @@ class Skytils {
                 File(it, "trackers").mkdirs()
             }
         }
+        val capesDir = File(modDir, "capes")
 
         @JvmStatic
         lateinit var guiManager: GuiManager
@@ -351,6 +353,7 @@ class Skytils {
             ChestAnnounce,
             KuudraJoinAnnounce
         ).forEach(MinecraftForge.EVENT_BUS::register)
+        GuiCapeManager.load()
     }
 
     @Mod.EventHandler
@@ -370,6 +373,9 @@ class Skytils {
 
     @Mod.EventHandler
     fun loadComplete(event: FMLLoadCompleteEvent) {
+        if (!capesDir.exists()) {
+            capesDir.mkdir()
+        }
         val cch = ClientCommandHandler.instance
 
         if (cch !is AccessorCommandHandler) throw RuntimeException(
@@ -408,6 +414,9 @@ class Skytils {
         }
         if (!cch.commands.containsKey("tyfrs")) {
             cch.registerCommand(TYFRSCommand)
+        }
+        if (!cch.commands.containsKey("managecapes")) {
+            cch.registerCommand(CapeManagerCommand)
         }
 
         cch.commandSet.add(RepartyCommand)

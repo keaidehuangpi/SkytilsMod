@@ -95,6 +95,13 @@ dependencies {
         exclude(module = "asm-tree")
         exclude(module = "gson")
     }
+    implementation("com.github.zh79325:open-gif:1.0.4") {
+        exclude(module = "slf4j-api")
+        exclude(module = "logback-core")
+        exclude(module = "logback-classic")
+        exclude(module = "junit")
+    }
+
 
     shadowMeMod("com.github.Skytils:AsmHelper:91ecc2bd9c") {
         exclude(module = "kotlin-reflect")

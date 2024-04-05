@@ -34,6 +34,7 @@ import gg.skytils.skytilsmod.utils.graphics.ScreenRenderer
 import gg.skytils.skytilsmod.utils.graphics.SmartFontRenderer
 import gg.skytils.skytilsmod.utils.graphics.colors.CommonColors
 import net.minecraft.block.Block
+import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.RenderGlobal
@@ -917,3 +918,8 @@ fun Color.multAlpha(mult: Float) = Color(
 
 fun AxisAlignedBB.expandBlock(): AxisAlignedBB =
     expand(0.0020000000949949026, 0.0020000000949949026, 0.0020000000949949026)
+fun FontRenderer.drawCenteredString(s: String, x: Float, y: Float, color: Int, shadow: Boolean) =
+    drawString(s, x - getStringWidth(s) / 2F, y, color, shadow)
+
+fun FontRenderer.drawCenteredString(s: String, x: Float, y: Float, color: Int) =
+    drawString(s, x - getStringWidth(s) / 2F, y, color, false)

@@ -29,6 +29,7 @@ import gg.essential.vigilance.data.SortingBehavior
 import gg.skytils.skytilsmod.Reference
 import gg.skytils.skytilsmod.Skytils
 import gg.skytils.skytilsmod.Skytils.Companion.mc
+import gg.skytils.skytilsmod.commands.impl.CapeManagerCommand
 import gg.skytils.skytilsmod.commands.impl.RepartyCommand
 import gg.skytils.skytilsmod.features.impl.trackers.Tracker
 import gg.skytils.skytilsmod.gui.PotionNotificationsGui
@@ -3208,6 +3209,25 @@ object Config : Vigilant(
         options = ["FengZhiyuan", "GanGa","GaoChongPo","SunXiaoChuan","SunZheng","WangHang"]
     )
     var bigGodUseHead = 0
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Custom Cape",
+        description = "Use custom capes.To change capes please do /managecapes.\nYou can also visit .minecraft/config/skytils/capes to add your own capes.",
+        category = "General", subcategory = "Other",
+    )
+    var useCustomCapes = false
+
+    @Property(
+        type = PropertyType.BUTTON, name = "Open Cape Manager",
+        description = "Opens the cape manager",
+        category = "General", subcategory = "Other",
+    )
+    fun openCapeManager() {
+        mc.thePlayer.closeScreen()
+        CapeManagerCommand.processCommand(mc.thePlayer, emptyArray())
+    }
+
+
 
 
 

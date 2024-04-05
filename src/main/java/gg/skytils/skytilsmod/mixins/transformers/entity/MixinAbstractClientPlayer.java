@@ -19,7 +19,9 @@
 package gg.skytils.skytilsmod.mixins.transformers.entity;
 
 import com.mojang.authlib.GameProfile;
+import gg.skytils.skytilsmod.cape.GuiCapeManager;
 import gg.skytils.skytilsmod.mixins.hooks.entity.AbstractClientPlayerHook;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -52,5 +54,15 @@ public abstract class MixinAbstractClientPlayer extends EntityPlayer {
     @Inject(method = "getSkinType", at = @At("RETURN"), cancellable = true)
     private void replaceSkinType(CallbackInfoReturnable<String> cir) {
         hook.replaceSkinType(cir);
+    }
+
+    @Inject(method = "getLocationCape", at = @At("HEAD"), cancellable = true)
+    private void getCape(CallbackInfoReturnable<ResourceLocation> callbackInfoReturnable) {
+        if (!getUniqueID().equals(Minecraft.getMinecraft().thePlayer.getUniqueID()))
+            return;
+
+
+        if (GuiCapeManager.INSTANCE.getNowCape() != null)
+            callbackInfoReturnable.setReturnValue(GuiCapeManager.INSTANCE.getNowCape().getCape());
     }
 }

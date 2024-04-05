@@ -19,6 +19,7 @@
 package gg.skytils.skytilsmod.mixins.transformers.entity;
 
 import com.mojang.authlib.GameProfile;
+import gg.skytils.skytilsmod.Skytils;
 import gg.skytils.skytilsmod.cape.GuiCapeManager;
 import gg.skytils.skytilsmod.mixins.hooks.entity.AbstractClientPlayerHook;
 import net.minecraft.client.Minecraft;
@@ -62,7 +63,7 @@ public abstract class MixinAbstractClientPlayer extends EntityPlayer {
             return;
 
 
-        if (GuiCapeManager.INSTANCE.getNowCape() != null)
+        if (GuiCapeManager.INSTANCE.getNowCape() != null && Skytils.Companion.getConfig().getUseCustomCapes())
             callbackInfoReturnable.setReturnValue(GuiCapeManager.INSTANCE.getNowCape().getCape());
     }
 }

@@ -3227,6 +3227,13 @@ object Config : Vigilant(
         CapeManagerCommand.processCommand(mc.thePlayer, emptyArray())
     }
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Dinnerbone",
+        description = "Upside down!",
+        category = "General", subcategory = "Other",
+    )
+    var upsideDown = false
+
 
 
 

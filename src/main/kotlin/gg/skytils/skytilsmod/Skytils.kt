@@ -247,6 +247,9 @@ class Skytils {
         guiManager = GuiManager
         jarFile = event.sourceFile
         mc.framebuffer.enableStencil()
+        if (!capesDir.exists()) {
+            capesDir.mkdir()
+        }
     }
 
     @Mod.EventHandler
@@ -373,9 +376,6 @@ class Skytils {
 
     @Mod.EventHandler
     fun loadComplete(event: FMLLoadCompleteEvent) {
-        if (!capesDir.exists()) {
-            capesDir.mkdir()
-        }
         val cch = ClientCommandHandler.instance
 
         if (cch !is AccessorCommandHandler) throw RuntimeException(

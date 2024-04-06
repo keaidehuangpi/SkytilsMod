@@ -3213,17 +3213,17 @@ object Config : Vigilant(
     @Property(
         type = PropertyType.SWITCH, name = "Custom Cape",
         description = "Use custom capes.To change capes please do /managecapes.\nYou can also visit .minecraft/config/skytils/capes to add your own capes.",
-        category = "General", subcategory = "Other",
+        category = "General", subcategory = "Visual",
     )
     var useCustomCapes = false
 
     @Property(
         type = PropertyType.BUTTON, name = "Open Cape Manager",
         description = "Opens the cape manager",
-        category = "General", subcategory = "Other",
+        category = "General", subcategory = "Visual",
     )
     fun openCapeManager() {
-        mc.thePlayer.closeScreen()
+        repeat(2, { mc.thePlayer.closeScreen() })
         CapeManagerCommand.processCommand(mc.thePlayer, emptyArray())
     }
 
@@ -3233,6 +3233,22 @@ object Config : Vigilant(
         category = "General", subcategory = "Other",
     )
     var upsideDown = false
+
+    @Property(
+        type = PropertyType.SWITCH, name = "HitMark",
+        description = "Shows a hitmark on your crosshair when you hit something.",
+        category = "General", subcategory = "Visual",
+    )
+    var hitMark = false
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Hit mark max hurt time",
+        description = "Changes the max time hit mark shows.",
+        category = "General", subcategory = "Visual",
+        min = 0,
+        max = 3000,
+    )
+    var hitMarkTime = 300
 
 
 

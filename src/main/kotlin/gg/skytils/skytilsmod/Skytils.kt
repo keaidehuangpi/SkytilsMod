@@ -290,6 +290,7 @@ class Skytils {
             CooldownTracker,
             CustomNotifications,
             ChinaHat,
+            CrossHair,
             DamageSplash,
             DungeonFeatures,
             DungeonMap,

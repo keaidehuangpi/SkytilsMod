@@ -19,6 +19,7 @@
 package gg.skytils.skytilsmod.core
 
 import gg.skytils.skytilsmod.Skytils
+import gg.skytils.skytilsmod.cape.GuiCapeManager
 import gg.skytils.skytilsmod.utils.ensureFile
 import kotlinx.serialization.json.Json
 import net.minecraft.client.Minecraft
@@ -107,6 +108,9 @@ abstract class PersistentSave(protected val saveFile: File) {
                     if (save.dirty) save.writeSave()
                 }
             }, "Skytils-PersistentSave-Shutdown"))
+            Runtime.getRuntime().addShutdownHook(Thread({
+                GuiCapeManager.save()
+            }, "Skytils-CapeManager-Save"))
         }
     }
 }

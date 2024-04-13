@@ -32,7 +32,7 @@ object Wings {
         if (!Config.wings) {
             return
         }
-        if (Config.wingsOnly3RD && mc.gameSettings.thirdPersonView != 0) {
+        if (Config.wingsOnly3RD && mc.gameSettings.thirdPersonView == 0) {
             return
         }
 

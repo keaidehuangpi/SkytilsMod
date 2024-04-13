@@ -3178,8 +3178,33 @@ object Config : Vigilant(
         type = PropertyType.SWITCH, name = "EverythingBlock",
         description = "woooooo!",
         category = "General", subcategory = "Other",
+        searchTags = ["everything,block", "everythingblock"]
     )
     var everythingBlock=false
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Blocks",
+        description = "Show block animation on blocks",
+        category = "General", subcategory = "Other",
+        searchTags = ["everything,block", "everythingblock"]
+    )
+    var everythingBlockBlocks = false
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Tools",
+        description = "Show block animation on tools",
+        category = "General", subcategory = "Other",
+        searchTags = ["everything,block", "everythingblock"]
+    )
+    var everythingBlockTools = false
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Skulls",
+        description = "Show block animation on skulls",
+        category = "General", subcategory = "Other",
+        searchTags = ["everything,block", "everythingblock"]
+    )
+    var everythingBlockSkull = false
 
     @Property(
         type = PropertyType.SWITCH, name = "BigGod",
@@ -3332,6 +3357,11 @@ object Config : Vigilant(
             "swingSpeed",
             "animationsMode"
         ).forEach { propertyName -> addDependency(propertyName, "animations") }
+        listOf(
+            "everythingBlockBlocks",
+            "everythingBlockTools",
+            "everythingBlockSkull",
+        ).forEach { propertyName -> addDependency(propertyName, "everythingBlock") }
         listOf(
             "bigGodUseHead",
             "bigGodThruWalls",

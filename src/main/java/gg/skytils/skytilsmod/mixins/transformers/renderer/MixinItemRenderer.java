@@ -30,8 +30,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
-import net.minecraft.item.EnumAction;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.util.MathHelper;
 import org.lwjgl.opengl.GL11;
 import org.spongepowered.asm.mixin.Final;
@@ -172,7 +171,13 @@ public abstract class MixinItemRenderer {
             } else {
                 if ((
                         this.mc.gameSettings.keyBindUseItem.isKeyDown())
-                        && Config.INSTANCE.getEverythingBlock()) {
+                        && Config.INSTANCE.getEverythingBlock()
+                        && (
+                        (itemToRender.getItem() instanceof ItemBlock && Config.INSTANCE.getEverythingBlockBlocks())
+                                || (itemToRender.getItem() instanceof ItemSkull && Config.INSTANCE.getEverythingBlockSkull())
+                                || (itemToRender.getItem() instanceof ItemTool && Config.INSTANCE.getEverythingBlockTools())
+                )
+                ) {
                     renderingBlocked(f, f1,f2);
                 } else {
                     this.doItemUsedTransformations(f1);

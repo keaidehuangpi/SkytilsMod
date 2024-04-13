@@ -3289,6 +3289,31 @@ object Config : Vigilant(
     )
     var wingsOnly3RD = true
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Auto clicker",
+        description = "helps you click",
+        category = "Miscellaneous", subcategory = "Sucj"
+    )
+    var autoClicker = false
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Min cps",
+        description = "Minium cps for autoclicker.",
+        category = "Miscellaneous", subcategory = "Sucj",
+        min = 1,
+        max = 15,
+    )
+    var minCPS = 6
+
+    @Property(
+        type = PropertyType.SLIDER, name = "Max cps",
+        description = "Max cps for autoclicker.",
+        category = "Miscellaneous", subcategory = "Sucj",
+        min = 1,
+        max = 15,
+    )
+    var maxCPS = 9
+
 
 
 
@@ -3381,6 +3406,10 @@ object Config : Vigilant(
             "bigGodThruWalls",
             "bigGodOtherEntities",
         ).forEach { propertyName -> addDependency(propertyName, "bigGod") }
+        listOf(
+            "minCPS",
+            "maxCPS",
+        ).forEach { propertyName -> addDependency(propertyName, "autoClicker") }
 
 
         addDependency("activePetColor", "highlightActivePet")

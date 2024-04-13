@@ -273,6 +273,7 @@ class Skytils {
             ArmorColor,
             AuctionData,
             AuctionPriceOverlay,
+            Autoclicker,
             BetterStash,
             BlazeSolver,
             BloodHelper,

@@ -3188,7 +3188,7 @@ object Config : Vigilant(
         category = "General", subcategory = "Other",
         searchTags = ["everything,block", "everythingblock"]
     )
-    var everythingBlockBlocks = false
+    var everythingBlockBlocks = true
 
     @Property(
         type = PropertyType.SWITCH, name = "Tools",
@@ -3196,7 +3196,7 @@ object Config : Vigilant(
         category = "General", subcategory = "Other",
         searchTags = ["everything,block", "everythingblock"]
     )
-    var everythingBlockTools = false
+    var everythingBlockTools = true
 
     @Property(
         type = PropertyType.SWITCH, name = "Skulls",
@@ -3204,7 +3204,7 @@ object Config : Vigilant(
         category = "General", subcategory = "Other",
         searchTags = ["everything,block", "everythingblock"]
     )
-    var everythingBlockSkull = false
+    var everythingBlockSkull = true
 
     @Property(
         type = PropertyType.SWITCH, name = "BigGod",
@@ -3274,6 +3274,20 @@ object Config : Vigilant(
         max = 3000,
     )
     var hitMarkTime = 300
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Wings",
+        description = "Wings!",
+        category = "General", subcategory = "Visual",
+    )
+    var wings = false
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Wings only third person",
+        description = "Decide if wing only shows in 3rd person view.",
+        category = "General", subcategory = "Visual",
+    )
+    var wingsOnly3RD = true
 
 
 

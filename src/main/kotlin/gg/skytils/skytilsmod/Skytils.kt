@@ -351,6 +351,7 @@ class Skytils {
             VisitorHelper,
             WaterBoardSolver,
             Waypoints,
+            Wings,
             MouseHelperHook,
             Projectiles,
             NametagsPlayers,

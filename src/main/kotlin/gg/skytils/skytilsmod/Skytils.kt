@@ -29,12 +29,7 @@ import gg.skytils.skytilsmod.core.*
 import gg.skytils.skytilsmod.earlytweaker.DependencyLoader
 import gg.skytils.skytilsmod.events.impl.MainReceivePacketEvent
 import gg.skytils.skytilsmod.events.impl.PacketEvent
-import gg.skytils.skytilsmod.features.impl.crimson.KuudraChestProfit
-import gg.skytils.skytilsmod.features.impl.crimson.KuudraFeatures
-import gg.skytils.skytilsmod.features.impl.crimson.ChestAnnounce
-import gg.skytils.skytilsmod.features.impl.crimson.HideNonNametagMobs
-import gg.skytils.skytilsmod.features.impl.crimson.KuudraJoinAnnounce
-import gg.skytils.skytilsmod.features.impl.crimson.TrophyFish
+import gg.skytils.skytilsmod.features.impl.crimson.*
 import gg.skytils.skytilsmod.features.impl.dungeons.*
 import gg.skytils.skytilsmod.features.impl.dungeons.catlas.Catlas
 import gg.skytils.skytilsmod.features.impl.dungeons.catlas.core.CatlasConfig
@@ -344,7 +339,6 @@ class Skytils {
             KuudraChestProfit,
             KuudraFeatures,
             LividFinder,
-            HideNonNametagMobs,
             LockOrb,
             MasterMode7Features,
             MayorDiana,

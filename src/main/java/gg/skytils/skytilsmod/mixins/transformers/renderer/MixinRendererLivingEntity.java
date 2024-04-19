@@ -20,6 +20,7 @@ package gg.skytils.skytilsmod.mixins.transformers.renderer;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import gg.skytils.skytilsmod.Skytils;
 import gg.skytils.skytilsmod.mixins.hooks.renderer.RendererLivingEntityHookKt;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.entity.Render;

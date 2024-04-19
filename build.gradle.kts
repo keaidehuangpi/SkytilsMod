@@ -104,13 +104,6 @@ dependencies {
     shadowMe("com.github.Skytils.Vigilance:vigilance-1.8.9-forge:afb0909442") {
         isTransitive = false
     }
-    implementation("com.github.zh79325:open-gif:1.0.4") {
-        exclude(module = "slf4j-api")
-        exclude(module = "logback-core")
-        exclude(module = "logback-classic")
-        exclude(module = "junit")
-    }
-
 
     shadowMeMod("com.github.Skytils:AsmHelper:91ecc2bd9c") {
         exclude(module = "kotlin-reflect")
@@ -130,6 +123,13 @@ dependencies {
             strictly("[1.5.1,)")
             prefer("1.6.2")
         }
+    }
+
+    implementation("com.github.zh79325:open-gif:1.0.4") {
+        exclude(module = "slf4j-api")
+        exclude(module = "logback-core")
+        exclude(module = "logback-classic")
+        exclude(module = "junit")
     }
 
     shadowMe(ktorClient("core"))

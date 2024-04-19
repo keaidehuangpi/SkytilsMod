@@ -20,7 +20,9 @@ package gg.skytils.skytilsmod.features.impl.misc
 import gg.essential.universal.UGraphics
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.UResolution
+import gg.skytils.hypixel.types.skyblock.Pet
 import gg.skytils.skytilsmod.Skytils
+import gg.skytils.skytilsmod.Skytils.Companion.json
 import gg.skytils.skytilsmod.Skytils.Companion.mc
 import gg.skytils.skytilsmod.core.GuiManager
 import gg.skytils.skytilsmod.core.structure.GuiElement
@@ -33,6 +35,7 @@ import gg.skytils.skytilsmod.events.impl.PacketEvent
 import gg.skytils.skytilsmod.features.impl.dungeons.DungeonFeatures
 import gg.skytils.skytilsmod.features.impl.dungeons.DungeonFeatures.dungeonFloorNumber
 import gg.skytils.skytilsmod.features.impl.handlers.AuctionData
+import gg.skytils.skytilsmod.features.impl.handlers.KuudraPriceData
 import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorGuiContainer
 import gg.skytils.skytilsmod.utils.*
 import gg.skytils.skytilsmod.utils.ItemUtil.getDisplayName
@@ -42,6 +45,7 @@ import gg.skytils.skytilsmod.utils.ItemUtil.getSkyBlockItemID
 import gg.skytils.skytilsmod.utils.NumberUtil.romanToDecimal
 import gg.skytils.skytilsmod.utils.RenderUtil.highlight
 import gg.skytils.skytilsmod.utils.RenderUtil.renderRarity
+import gg.skytils.skytilsmod.utils.SkillUtils.level
 import gg.skytils.skytilsmod.utils.Utils.equalsOneOf
 import gg.skytils.skytilsmod.utils.graphics.ScreenRenderer
 import gg.skytils.skytilsmod.utils.graphics.SmartFontRenderer.TextAlignment
@@ -83,9 +87,9 @@ import kotlin.math.pow
 
 object ItemFeatures {
 
-    private val candyPattern = Regex("§a\\((\\d+)/10\\) Pet Candy Used")
     private val headPattern =
         Regex("(?:DIAMOND|GOLD)_(?:(BONZO)|(SCARF)|(PROFESSOR)|(THORN)|(LIVID)|(SADAN)|(NECRON))_HEAD")
+    private val requirementPattern = Regex("CATACOMBS:(?<level>\\d+)")
 
     // TODO: it is possible for 2 items to have the same name but different material
     val itemIdToNameLookup = hashMapOf<String, String>()
@@ -93,7 +97,6 @@ object ItemFeatures {
     val bitCosts = HashMap<String, Int>()
     val copperCosts = HashMap<String, Int>()
     val hotbarRarityCache = arrayOfNulls<ItemRarity>(9)
-    var selectedArrow = ""
     var soulflowAmount = ""
     var stackingEnchantDisplayText = ""
     var lowSoulFlowPinged = false
@@ -101,7 +104,6 @@ object ItemFeatures {
     var lastShieldClick = 0L
 
     init {
-        SelectedArrowDisplay()
         StackingEnchantDisplay()
         SoulflowGuiElement()
         WitherShieldDisplay()
@@ -305,7 +307,7 @@ object ItemFeatures {
             }
         }
         if (itemId != null) {
-            if (Skytils.config.showLowestBINPrice || Skytils.config.showCoinsPerBit || Skytils.config.showCoinsPerCopper) {
+            if (Skytils.config.showLowestBINPrice || Skytils.config.showCoinsPerBit || Skytils.config.showCoinsPerCopper || Skytils.config.showKuudraLowestBinPrice) {
                 val auctionIdentifier = if (isSuperpairsReward) itemId else AuctionData.getIdentifier(item)
                 if (auctionIdentifier != null) {
                     // this might actually have multiple items as the price
@@ -321,6 +323,22 @@ object ItemFeatures {
                                     valuePer
                                 ) + " each§7)" else ""
                             )
+                        }
+                        if (Skytils.config.showKuudraLowestBinPrice && item.stackSize == 1) {
+                            KuudraPriceData.getAttributePricedItemId(item)?.let {attrId ->
+                                val kuudraPrice = KuudraPriceData.getOrRequestAttributePricedItem(attrId)
+                                if (kuudraPrice != null) {
+                                    if (kuudraPrice == KuudraPriceData.AttributePricedItem.EMPTY) {
+                                        event.toolTip.add("§6Kuudra BIN Price: §cNot Found")
+                                    } else {
+                                        event.toolTip.add(
+                                            "§6Kuudra BIN Price: §b${NumberUtil.nf.format(kuudraPrice.price)}"
+                                        )
+                                    }
+                                } else {
+                                    event.toolTip.add("§6Kuudra BIN Price: §cLoading...")
+                                }
+                            }
                         }
                         if (Skytils.config.showCoinsPerBit) {
                             var bitValue = bitCosts.getOrDefault(auctionIdentifier, -1)
@@ -414,6 +432,35 @@ object ItemFeatures {
                 }"
             })
         }
+
+        if (Skytils.config.showItemQuality && extraAttr != null) {
+            val boost = extraAttr.getInteger("baseStatBoostPercentage")
+            val tier = extraAttr.getInteger("item_tier")
+
+            if (boost > 0 && tier > 0) {
+                val isMasterMode =
+                    requirementPattern
+                        .matchEntire(
+                            extraAttr.getString("dungeon_skill_req")
+                        )?.groupValues?.get(1)?.toIntOrNull()?.let { it > 24 }
+
+                val floor = when (isMasterMode) {
+                    true -> "§4M${tier - 3}"
+                    false -> "§aF$tier"
+                    else -> "§b$tier"
+                }
+
+                val color = when {
+                    boost <= 17 -> "§c"
+                    boost <= 33 -> "§e"
+                    boost <= 49 -> "§a"
+                    else -> "§b"
+                }
+
+                event.toolTip.add("§6Quality: $color$boost% §7($floor§7)")
+            }
+        }
+
         if (DevTools.getToggle("nbt") && Keyboard.isKeyDown(46) && GuiScreen.isCtrlKeyDown() && !GuiScreen.isShiftKeyDown() && !GuiScreen.isAltKeyDown()) {
             GuiScreen.setClipboardString(event.itemStack?.tagCompound?.toString())
         }
@@ -450,11 +497,6 @@ object ItemFeatures {
                 val extraAttr = getExtraAttributes(item) ?: return
                 val itemId = getSkyBlockItemID(extraAttr) ?: return
 
-                if (itemId == "ARROW_SWAPPER") {
-                    selectedArrow = getItemLore(item).find {
-                        it.startsWith("§aSelected: §")
-                    }?.substringAfter("§aSelected: ") ?: "§cUnknown"
-                }
                 if (equalsOneOf(itemId, "SOULFLOW_PILE", "SOULFLOW_BATTERY", "SOULFLOW_SUPERCELL")) {
                     getItemLore(item).find {
                         it.startsWith("§7Internalized: ")
@@ -646,11 +688,15 @@ object ItemFeatures {
                     }
             }
         }
-        if (Skytils.config.showPetCandies && item.item === Items.skull) { // TODO: Use NBT
-            lore?.forEach { line ->
-                candyPattern.find(line)?.let {
-                    stackTip = it.groups[1]!!.value
-                    return@forEach
+        if (Skytils.config.showPetCandies && item.item === Items.skull) {
+            val petInfoString = getExtraAttributes(item)?.getString("petInfo")
+            if (!petInfoString.isNullOrBlank()) {
+                val petInfo = json.decodeFromString<Pet>(petInfoString)
+                val level = petInfo.level
+                val maxLevel = if (petInfo.type == "GOLDEN_DRAGON") 200 else 100
+
+                if (petInfo.candyUsed > 0 && level != maxLevel) {
+                    stackTip = petInfo.candyUsed.toString()
                 }
             }
         }
@@ -760,47 +806,6 @@ object ItemFeatures {
             if (sideHit !== EnumFacing.UP && newBlock.block is BlockSign) return@all false
             if (newBlock.block is BlockLadder || newBlock.block is BlockDoor) return@all false
             return@all newBlock.block.isPassable(mc.theWorld, newPos)
-        }
-    }
-
-    class SelectedArrowDisplay : GuiElement("Arrow Swapper Display", x = 0.65f, y = 0.85f) {
-        override fun render() {
-            if (toggled && Utils.inSkyblock) {
-                val alignment =
-                    if (scaleX < UResolution.scaledWidth / 2f) TextAlignment.LEFT_RIGHT else TextAlignment.RIGHT_LEFT
-                ScreenRenderer.fontRenderer.drawString(
-                    selectedArrow,
-                    if (scaleX < UResolution.scaledWidth / 2f) 0f else width.toFloat(),
-                    0f,
-                    CommonColors.WHITE,
-                    alignment,
-                    TextShadow.NORMAL
-                )
-            }
-        }
-
-        override fun demoRender() {
-            val alignment =
-                if (scaleX < UResolution.scaledWidth / 2f) TextAlignment.LEFT_RIGHT else TextAlignment.RIGHT_LEFT
-            ScreenRenderer.fontRenderer.drawString(
-                "§aSelected: §rSkytils Arrow",
-                if (scaleX < UResolution.scaledWidth / 2f) 0f else width.toFloat(),
-                0f,
-                CommonColors.RAINBOW,
-                alignment,
-                TextShadow.NORMAL
-            )
-        }
-
-        override val height: Int
-            get() = ScreenRenderer.fontRenderer.FONT_HEIGHT
-        override val width: Int
-            get() = ScreenRenderer.fontRenderer.getStringWidth("§aSelected: §rSkytils Arrow")
-        override val toggled: Boolean
-            get() = Skytils.config.showSelectedArrowDisplay
-
-        init {
-            Skytils.guiManager.registerElement(this)
         }
     }
 

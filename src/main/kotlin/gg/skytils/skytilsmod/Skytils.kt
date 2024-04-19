@@ -26,13 +26,18 @@ import gg.skytils.skytilsmod.commands.impl.*
 import gg.skytils.skytilsmod.commands.stats.impl.CataCommand
 import gg.skytils.skytilsmod.commands.stats.impl.SlayerCommand
 import gg.skytils.skytilsmod.core.*
+import gg.skytils.skytilsmod.earlytweaker.DependencyLoader
 import gg.skytils.skytilsmod.events.impl.MainReceivePacketEvent
 import gg.skytils.skytilsmod.events.impl.PacketEvent
+import gg.skytils.skytilsmod.features.impl.crimson.KuudraChestProfit
+import gg.skytils.skytilsmod.features.impl.crimson.KuudraFeatures
 import gg.skytils.skytilsmod.features.impl.crimson.ChestAnnounce
 import gg.skytils.skytilsmod.features.impl.crimson.HideNonNametagMobs
 import gg.skytils.skytilsmod.features.impl.crimson.KuudraJoinAnnounce
 import gg.skytils.skytilsmod.features.impl.crimson.TrophyFish
 import gg.skytils.skytilsmod.features.impl.dungeons.*
+import gg.skytils.skytilsmod.features.impl.dungeons.catlas.Catlas
+import gg.skytils.skytilsmod.features.impl.dungeons.catlas.core.CatlasConfig
 import gg.skytils.skytilsmod.features.impl.dungeons.solvers.*
 import gg.skytils.skytilsmod.features.impl.dungeons.solvers.terminals.*
 import gg.skytils.skytilsmod.features.impl.events.GriffinBurrows
@@ -43,6 +48,7 @@ import gg.skytils.skytilsmod.features.impl.farming.FarmingFeatures
 import gg.skytils.skytilsmod.features.impl.farming.GardenFeatures
 import gg.skytils.skytilsmod.features.impl.farming.TreasureHunter
 import gg.skytils.skytilsmod.features.impl.farming.VisitorHelper
+import gg.skytils.skytilsmod.features.impl.funny.Funny
 import gg.skytils.skytilsmod.features.impl.handlers.*
 import gg.skytils.skytilsmod.features.impl.mining.MiningFeatures
 import gg.skytils.skytilsmod.features.impl.mining.StupidTreasureChestOpeningThing
@@ -62,6 +68,7 @@ import gg.skytils.skytilsmod.listeners.ChatListener
 import gg.skytils.skytilsmod.listeners.DungeonListener
 import gg.skytils.skytilsmod.localapi.LocalAPI
 import gg.skytils.skytilsmod.mixins.extensions.ExtensionEntityLivingBase
+import gg.skytils.skytilsmod.mixins.hooks.entity.EntityPlayerSPHook
 import gg.skytils.skytilsmod.mixins.hooks.util.MouseHelperHook
 import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorCommandHandler
 import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorGuiStreamUnavailable
@@ -75,6 +82,7 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.cache.*
 import io.ktor.client.plugins.compression.*
 import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
@@ -109,9 +117,12 @@ import java.io.File
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
+import java.security.KeyStore
 import java.util.*
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadPoolExecutor
+import javax.net.ssl.TrustManagerFactory
+import javax.net.ssl.X509TrustManager
 import kotlin.coroutines.CoroutineContext
 import kotlin.math.abs
 
@@ -205,17 +216,21 @@ class Skytils {
 
         val client = HttpClient(CIO) {
             install(ContentEncoding) {
+                customEncoder(BrotliEncoder, 1.0F)
                 deflate(1.0F)
                 gzip(0.9F)
+                identity(0.1F)
             }
             install(ContentNegotiation) {
                 json(json)
+                json(json, ContentType.Text.Plain)
             }
             install(HttpCache)
             install(HttpRequestRetry) {
                 retryOnServerErrors(maxRetries = 3)
                 exponentialDelay()
             }
+            install(HttpTimeout)
             install(UserAgent) {
                 agent = "Skytils/$VERSION"
             }
@@ -226,6 +241,22 @@ class Skytils {
                     keepAliveTime = 5000
                     requestTimeout = 10000
                     socketTimeout = 10000
+                }
+                https {
+                    val backingManager = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()).apply {
+                        init(null as KeyStore?)
+                    }.trustManagers.first { it is X509TrustManager } as X509TrustManager
+
+                    val ourManager = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm()).apply {
+                        Skytils::class.java.getResourceAsStream("/skytilscacerts.jks").use {
+                            val ourKs = KeyStore.getInstance(KeyStore.getDefaultType()).apply {
+                                load(it, "skytilsontop".toCharArray())
+                            }
+                            init(ourKs)
+                        }
+                    }.trustManagers.first { it is X509TrustManager } as X509TrustManager
+
+                    trustManager = UnionX509TrustManager(backingManager, ourManager)
                 }
             }
         }
@@ -255,6 +286,7 @@ class Skytils {
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
         config.init()
+        CatlasConfig
         UpdateChecker.downloadDeleteTask()
 
         arrayOf(
@@ -283,7 +315,7 @@ class Skytils {
             BoulderSolver,
             ChatTabs,
             ChangeAllToSameColorSolver,
-            ChestProfit,
+            DungeonChestProfit,
             ClickInOrderSolver,
             CreeperSolver,
             CommandAliases,
@@ -294,7 +326,7 @@ class Skytils {
             CrossHair,
             DamageSplash,
             DungeonFeatures,
-            DungeonMap,
+            Catlas,
             DungeonTimer,
             DupeTracker,
             EnchantNames,
@@ -306,8 +338,12 @@ class Skytils {
             GriffinBurrows,
             IceFillSolver,
             IcePathSolver,
+            ItemCycle,
             ItemFeatures,
             KeyShortcuts,
+            KuudraChestProfit,
+            KuudraFeatures,
+            LividFinder,
             HideNonNametagMobs,
             LockOrb,
             MasterMode7Features,
@@ -326,6 +362,7 @@ class Skytils {
             PotionEffectTimers,
             PricePaid,
             ProtectItems,
+            QuiverStuff,
             RainTimer,
             RandomStuff,
             RelicWaypoints,
@@ -352,6 +389,8 @@ class Skytils {
             VisitorHelper,
             WaterBoardSolver,
             Waypoints,
+            EntityPlayerSPHook,
+            MouseHelperHook,
             Wings,
             MouseHelperHook,
             Projectiles,
@@ -390,6 +429,7 @@ class Skytils {
         cch.registerCommand(CalcXPCommand)
         cch.registerCommand(FragBotCommand)
         cch.registerCommand(HollowWaypointCommand)
+        cch.registerCommand(ItemCycleCommand)
         cch.registerCommand(LimboCommand)
         cch.registerCommand(OrderedWaypointCommand)
         cch.registerCommand(ScamCheckCommand)
@@ -447,6 +487,14 @@ class Skytils {
         }
 
         checkSystemTime()
+
+        if (!DependencyLoader.hasNativeBrotli) {
+            if (ModChecker.canShowNotifications) {
+                EssentialAPI.getNotifications().push("Skytils Warning", "Native Brotli is not available. Skytils will use the Java Brotli decoder, which cannot encode Brotli.", duration = 3f)
+            } else {
+                UChat.chat("$prefix §fNative Brotli is not available. Skytils will use the Java Brotli decoder, which cannot encode Brotli.")
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)

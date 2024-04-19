@@ -43,7 +43,6 @@ import gg.skytils.skytilsmod.utils.RenderUtil.renderItem
 import gg.skytils.skytilsmod.utils.RenderUtil.renderTexture
 import gg.skytils.skytilsmod.utils.Utils.equalsOneOf
 import gg.skytils.skytilsmod.utils.graphics.ScreenRenderer
-import gg.skytils.skytilsmod.utils.graphics.SmartFontRenderer
 import gg.skytils.skytilsmod.utils.graphics.SmartFontRenderer.TextAlignment
 import gg.skytils.skytilsmod.utils.graphics.colors.CommonColors
 import net.minecraft.block.BlockEndPortalFrame
@@ -79,6 +78,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.entity.EntityJoinWorldEvent
 import net.minecraftforge.event.entity.living.EnderTeleportEvent
 import net.minecraftforge.event.entity.player.ItemTooltipEvent
+import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.Loader
 import net.minecraftforge.fml.common.eventhandler.Event
 import net.minecraftforge.fml.common.eventhandler.EventPriority
@@ -334,8 +334,10 @@ object MiscFeatures {
         if (healthPercentage < Skytils.config.lowHealthVignetteThreshold) {
             val color =
                 Skytils.config.lowHealthVignetteColor.withAlpha((Skytils.config.lowHealthVignetteColor.alpha * (1.0 - healthPercentage)).toInt())
+
+            PatcherCompatability.disableHUDCaching = true
             RenderUtil.drawVignette(color)
-        }
+        } else PatcherCompatability.disableHUDCaching = false
     }
 
     @SubscribeEvent

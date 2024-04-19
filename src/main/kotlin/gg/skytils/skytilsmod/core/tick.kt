@@ -18,10 +18,13 @@
 
 package gg.skytils.skytilsmod.core
 
-import gg.skytils.event.Events
+import gg.essential.universal.UChat
+import gg.skytils.event.await
 import gg.skytils.event.impl.TickEvent
+import gg.skytils.skytilsmod.Skytils
 import gg.skytils.skytilsmod.Skytils.Companion.mc
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -48,9 +51,14 @@ fun tickTimer(ticks: Int, repeats: Boolean = false, register: Boolean = true, ta
 fun <T> tickTask(ticks: Int, repeats: Boolean = false, task: () -> T) =
     flow {
         do {
-            Events.await<TickEvent>(ticks)
+            await<TickEvent>(ticks)
             emit(withContext(Dispatchers.MC) {
                 task()
             })
         } while (repeats)
+    }.catch {e ->
+        if (e is RuntimeException) {
+            e.printStackTrace()
+            UChat.chat("${Skytils.failPrefix} §cSkytils ${Skytils.VERSION} caught and logged an ${e::class.simpleName ?: "error"} on a tick task. Please report this on the Discord server at discord.gg/skytils.")
+        } else throw e
     }.flowOn(Tick.dispatcher)

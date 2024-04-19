@@ -21,11 +21,11 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.security.MessageDigest
 
 plugins {
-    kotlin("jvm") version "1.9.21"
-    kotlin("plugin.serialization") version "1.9.21"
+    kotlin("jvm") version "1.9.22"
+    kotlin("plugin.serialization") version "1.9.22"
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.kyori.blossom") version "2.1.0"
-    id("io.github.juuxel.loom-quiltflower") version "1.10.0"
+    id("io.github.juuxel.loom-vineflower") version "1.11.0"
     id("gg.essential.loom") version "1.3.12"
     id("gg.essential.defaults") version "0.3.0"
     idea
@@ -34,7 +34,7 @@ plugins {
     signing
 }
 
-version = "1.8.3"
+version = "1.9.2"
 group = "gg.skytils"
 
 repositories {
@@ -42,11 +42,15 @@ repositories {
     mavenCentral()
     maven("https://repo.sk1er.club/repository/maven-public/")
     maven("https://repo.sk1er.club/repository/maven-releases/")
-    maven("https://jitpack.io")
+    maven("https://jitpack.io") {
+        mavenContent {
+            includeGroupAndSubgroups("com.github")
+        }
+    }
 }
 
-quiltflower {
-    quiltflowerVersion.set("1.9.0")
+vineflower {
+    toolVersion.set("1.9.3")
 }
 
 loom {
@@ -65,6 +69,7 @@ loom {
             property("legacy.debugClassLoading", "true")
             property("legacy.debugClassLoadingSave", "true")
             property("legacy.debugClassLoadingFiner", "true")
+            programArgs("--tweakClass", "gg.skytils.earlytweaker.EarlyTweakerLoader")
             programArgs("--tweakClass", "gg.skytils.skytilsmod.tweaker.SkytilsTweaker")
             programArgs("--mixin", "mixins.skytils.json")
             programArgs("--mixin", "mixins.skytils-events.json")
@@ -88,12 +93,16 @@ val shadowMeMod: Configuration by configurations.creating {
 }
 
 dependencies {
-    shadowMe("gg.essential:loader-launchwrapper:1.2.1")
-    implementation("gg.essential:essential-1.8.9-forge:14616+g169bd9af6a") {
+    shadowMe("gg.essential:loader-launchwrapper:1.2.2")
+    implementation("gg.essential:essential-1.8.9-forge:16425+g3a090c5c88") {
         exclude(module = "asm")
         exclude(module = "asm-commons")
         exclude(module = "asm-tree")
         exclude(module = "gson")
+        exclude(module = "vigilance")
+    }
+    shadowMe("com.github.Skytils.Vigilance:vigilance-1.8.9-forge:afb0909442") {
+        isTransitive = false
     }
     implementation("com.github.zh79325:open-gif:1.0.4") {
         exclude(module = "slf4j-api")
@@ -112,10 +121,9 @@ dependencies {
     }
 
     shadowMe(platform(kotlin("bom")))
-    shadowMe(platform(ktor("bom", "2.3.7", addSuffix = false)))
+    shadowMe(platform(ktor("bom", "2.3.9", addSuffix = false)))
 
     shadowMe(ktor("serialization-kotlinx-json"))
-    shadowMe(ktor("serialization-gson"))
 
     shadowMe("org.jetbrains.kotlinx:kotlinx-serialization-json") {
         version {
@@ -140,18 +148,24 @@ dependencies {
     shadowMe(ktorServer("host-common"))
     shadowMe(ktorServer("auth"))
 
+    shadowMe("org.brotli:dec:0.1.2")
+    shadowMe("com.aayushatharva.brotli4j:brotli4j:1.16.0")
+
+    shadowMe(project(":earlytweaker")) {
+        isTransitive = false
+    }
     shadowMe(project(":events"))
     shadowMe(project(":hypixel-api:types"))
 
 
-    shadowMe(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.2")!!)
+    shadowMe(annotationProcessor("io.github.llamalad7:mixinextras-common:0.3.5")!!)
     annotationProcessor("org.spongepowered:mixin:0.8.5:processor")
     compileOnly("org.spongepowered:mixin:0.8.5")
 }
 
 sourceSets {
     main {
-        output.setResourcesDir(file("${buildDir}/classes/kotlin/main"))
+        output.setResourcesDir(kotlin.classesDirectory)
         blossom {
             javaSources {
                 property("version", project.version.toString())
@@ -189,7 +203,7 @@ tasks {
     }
     named<RemapJarTask>("remapJar") {
         archiveBaseName.set("Skytils")
-        input.set(shadowJar.get().archiveFile)
+        inputFile.set(shadowJar.get().archiveFile)
         doLast {
             MessageDigest.getInstance("SHA-256").digest(archiveFile.get().asFile.readBytes())
                 .let {
@@ -208,9 +222,10 @@ tasks {
         relocate("io.ktor", "gg.skytils.ktor")
         relocate("kotlinx.serialization", "gg.skytils.ktx-serialization")
         relocate("kotlinx.coroutines", "gg.skytils.ktx-coroutines")
-        relocate("com.google.gson", "gg.skytils.gson")
+        relocate("gg.essential.vigilance", "gg.skytils.vigilance")
 
         exclude(
+            "**/LICENSE_MixinExtras",
             "**/LICENSE.md",
             "**/LICENSE.txt",
             "**/LICENSE",
@@ -223,12 +238,9 @@ tasks {
             "META-INF/maven/**",
             "META-INF/versions/**",
             "META-INF/com.android.tools/**",
-            "fabric.mod.json",
-            "/**/META-INF/services/io.ktor.serialization.kotlinx.KotlinxSerializationExtensionProvider"
+            "fabric.mod.json"
         )
-        mergeServiceFiles {
-            exclude("/**/META-INF/services/io.ktor.serialization.kotlinx.KotlinxSerializationExtensionProvider")
-        }
+        mergeServiceFiles()
     }
     withType<AbstractArchiveTask> {
         isPreserveFileTimestamps = false

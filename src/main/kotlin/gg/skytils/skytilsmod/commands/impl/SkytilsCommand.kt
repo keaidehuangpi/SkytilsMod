@@ -31,6 +31,13 @@ import gg.skytils.skytilsmod.commands.BaseCommand
 import gg.skytils.skytilsmod.core.DataFetcher
 import gg.skytils.skytilsmod.core.PersistentSave
 import gg.skytils.skytilsmod.core.UpdateChecker
+import gg.skytils.skytilsmod.features.impl.dungeons.PartyFinderStats
+import gg.skytils.skytilsmod.features.impl.dungeons.catlas.Catlas
+import gg.skytils.skytilsmod.features.impl.dungeons.catlas.core.CatlasConfig
+import gg.skytils.skytilsmod.features.impl.dungeons.catlas.handlers.DungeonInfo
+import gg.skytils.skytilsmod.features.impl.dungeons.catlas.handlers.DungeonScanner
+import gg.skytils.skytilsmod.features.impl.dungeons.catlas.utils.MapUtils
+import gg.skytils.skytilsmod.features.impl.dungeons.catlas.utils.ScanUtils
 import gg.skytils.skytilsmod.features.impl.events.GriffinBurrows
 import gg.skytils.skytilsmod.features.impl.handlers.MayorInfo
 import gg.skytils.skytilsmod.features.impl.mining.MiningFeatures
@@ -40,13 +47,18 @@ import gg.skytils.skytilsmod.features.impl.slayer.SlayerFeatures
 import gg.skytils.skytilsmod.features.impl.trackers.Tracker
 import gg.skytils.skytilsmod.gui.*
 import gg.skytils.skytilsmod.gui.editing.ElementaEditingGui
+import gg.skytils.skytilsmod.gui.editing.VanillaEditingGui
+import gg.skytils.skytilsmod.gui.features.*
 import gg.skytils.skytilsmod.gui.profile.ProfileGui
+import gg.skytils.skytilsmod.gui.updater.UpdateGui
+import gg.skytils.skytilsmod.gui.waypoints.WaypointsGui
 import gg.skytils.skytilsmod.localapi.LocalAPI
 import gg.skytils.skytilsmod.utils.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import net.minecraft.client.entity.EntityPlayerSP
+import net.minecraft.client.gui.GuiScreen
 import net.minecraft.command.WrongUsageException
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.util.ChatComponentText
@@ -84,6 +96,12 @@ object SkytilsCommand : BaseCommand("skytils", listOf("st")) {
                         .dayOfMonth) % MiningFeatures.fetchurItems.size]
                 )
             )
+
+            "stats" -> if (args.size == 1) {
+                UChat.chat("$prefix §b/skytils stats <player>")
+            } else {
+                PartyFinderStats.printStats(args[1], false)
+            }
 
             "griffin" -> if (args.size == 1) {
                 UChat.chat("$prefix §b/skytils griffin <refresh>")
@@ -179,6 +197,7 @@ object SkytilsCommand : BaseCommand("skytils", listOf("st")) {
                         #  §3/glintcustomize color <set/clear/clearall> §l➡ §bChange the enchantment glint color for an item.
                         # §9§l➜ Miscellaneous:
                         #  §3/reparty §l➡ §bDisbands and re-invites everyone in your party. §7(Alias: §f/rp§7)
+                        #  §3/skytils stats <player> §l➡ §bShows the Dungeon statistics of a player (Identical to the Party Finder Stats feature).
                         #  §3/skytilscata <player> §l➡ §bShows information about a player's Catacombs statistics.
                         #  §3/skytilsslayer <player> §l➡ §bShows information about a player's Slayer statistics.
                         #  §3/trackcooldown <length> <ability name> §l➡ §bTracks the cooldown of the specified ability.
@@ -196,7 +215,7 @@ object SkytilsCommand : BaseCommand("skytils", listOf("st")) {
             "editlocation", "editlocations", "location", "locations", "loc", "gui" ->
                 Skytils.displayScreen = ElementaEditingGui()
 
-            "oldgui" -> Skytils.displayScreen = LocationEditGui()
+            "oldgui" -> Skytils.displayScreen = VanillaEditingGui()
 
             "keyshortcuts", "shortcuts" -> Skytils.displayScreen = KeyShortcutsGui()
             "spam", "spamhider" -> Skytils.displayScreen = SpamHiderGui()
@@ -305,6 +324,45 @@ object SkytilsCommand : BaseCommand("skytils", listOf("st")) {
                     ?: return UChat.chat("$failPrefix §cThat element was not found!")
                 element.setPos(0.5f, 0.5f)
                 element.scale = 1f
+            }
+
+            "catlas", "dungeonmap" -> {
+                when (args.getOrNull(1)?.lowercase()) {
+                    // Scans the dungeon
+                    "scan" -> {
+                        Catlas.reset()
+                        DungeonScanner.scan()
+                    }
+                    // Copies room data or room core to clipboard
+                    "roomdata" -> {
+                        val pos = ScanUtils.getRoomCenter(mc.thePlayer.posX.toInt(), mc.thePlayer.posZ.toInt())
+                        val data = ScanUtils.getRoomData(pos.first, pos.second)
+                        if (data != null) {
+                            GuiScreen.setClipboardString(data.toString())
+                            UChat.chat("$successPrefix §aCopied room data to clipboard.")
+                        } else {
+                            GuiScreen.setClipboardString(ScanUtils.getCore(pos.first, pos.second).toString())
+                            UChat.chat("$successPrefix §aExisting room data not found. Copied room core to clipboard.")
+                        }
+                    }
+                    "mapdata" -> {
+                        val data = MapUtils.getMapData()
+                        if (data != null) {
+                            GuiScreen.setClipboardString(data.colors.contentToString())
+                            UChat.chat("$successPrefix §aCopied map data to clipboard.")
+                        } else {
+                            UChat.chat("$failPrefix §cMap data not found.")
+                        }
+                    }
+                    "cheater" -> {
+                        if (Skytils.deobfEnvironment) {
+                            UChat.chat(DungeonInfo.uniqueRooms.sortedByDescending { it.mainRoom.data.type }.map { it.name })
+                        }
+                    }
+                    else -> {
+                        Skytils.displayScreen = CatlasConfig.gui()
+                    }
+                }
             }
 
             else -> UChat.chat("$failPrefix §cThis command doesn't exist!\n §cUse §f/skytils help§c for a full list of commands")

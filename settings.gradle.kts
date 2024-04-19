@@ -26,10 +26,15 @@ pluginManagement {
         maven("https://maven.fabricmc.net")
         maven("https://maven.minecraftforge.net/")
         maven("https://repo.essential.gg/repository/maven-releases/")
-        maven("https://jitpack.io")
+        maven("https://jitpack.io") {
+            mavenContent {
+                includeGroupAndSubgroups("com.github")
+            }
+        }
     }
 }
 
 rootProject.name = "SkytilsMod"
+include("earlytweaker")
 include("events")
 include("hypixel-api:types")

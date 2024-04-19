@@ -19,12 +19,15 @@
 package gg.skytils.skytilsmod.tweaker;
 
 import gg.essential.universal.UDesktop;
+import gg.skytils.earlytweaker.Constants;
+import gg.skytils.earlytweaker.EarlyTweakerLoader;
 import gg.skytils.skytilsmod.Reference;
+import gg.skytils.skytilsmod.earlytweaker.SkytilsEarlyTweakerRegistrant;
+import net.minecraft.launchwrapper.Launch;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -53,7 +56,14 @@ public class EssentialPlatformSetup {
     }
 
     @SuppressWarnings("unused")
-    public static void setup() {
+    public static void setup() throws Throwable {
+        boolean isDev = Launch.classLoader.findResource("net/minecraft/world/World.class") != null;
+        if (!isDev) {
+            EarlyTweakerLoader.ensureVersion(Constants.VERSION, SkytilsEarlyTweakerRegistrant.class);
+        } else {
+            EarlyTweakerLoader.ensureLoaded(SkytilsEarlyTweakerRegistrant.class);
+        }
+
         try {
             String ver = System.getProperty("java.runtime.version", "unknown");
             String javaLoc = System.getProperty("java.home");

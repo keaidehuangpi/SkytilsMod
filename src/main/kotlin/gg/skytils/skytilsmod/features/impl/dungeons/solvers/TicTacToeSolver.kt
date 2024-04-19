@@ -102,12 +102,21 @@ object TicTacToeSolver {
     }
 
     @SubscribeEvent
-    fun onWorldLoad(event: WorldEvent.Load) {
+    fun onWorldLoad(event: WorldEvent.Unload) {
         topLeft = null
         roomFacing = null
         board = null
         bestMove = null
         mappedPositions.clear()
+    }
+
+    @SubscribeEvent
+    fun onPuzzleReset(event: DungeonEvent.PuzzleEvent.Reset) {
+        if (event.puzzle == "Tic Tac Toe") {
+            board = null
+            bestMove = null
+            mappedPositions.clear()
+        }
     }
 
     @SubscribeEvent

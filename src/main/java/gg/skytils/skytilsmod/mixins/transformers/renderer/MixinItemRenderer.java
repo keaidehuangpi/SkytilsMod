@@ -18,6 +18,8 @@
 
 package gg.skytils.skytilsmod.mixins.transformers.renderer;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import gg.skytils.skytilsmod.core.Config;
 import gg.skytils.skytilsmod.mixins.hooks.renderer.ItemRendererHookKt;
 import net.minecraft.client.Minecraft;
@@ -38,6 +40,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ItemRenderer.class)
@@ -86,9 +90,9 @@ public abstract class MixinItemRenderer {
     @Shadow
     protected abstract void performDrinking(AbstractClientPlayer clientPlayer, float p_178104_2_);
 
-    @Redirect(method = "renderItemInFirstPerson", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/AbstractClientPlayer;getItemInUseCount()I"))
-    private int getItemInUseCountForFirstPerson(AbstractClientPlayer abstractClientPlayer) {
-        return ItemRendererHookKt.getItemInUseCountForFirstPerson(abstractClientPlayer, itemToRender);
+    @WrapOperation(method = "renderItemInFirstPerson", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/entity/AbstractClientPlayer;getItemInUseCount()I"))
+    private int getItemInUseCountForFirstPerson(AbstractClientPlayer abstractClientPlayer, Operation<Integer> original) {
+        return ItemRendererHookKt.getItemInUseCountForFirstPerson(abstractClientPlayer, itemToRender, original);
     }
     /**
      * @author hanabi

@@ -79,7 +79,7 @@ object SBInfo {
     }
 
     @SubscribeEvent
-    fun onWorldChange(event: WorldEvent.Load) {
+    fun onWorldChange(event: WorldEvent.Unload) {
         lastLocRaw = -1
         locraw = null
         mode = null
@@ -206,8 +206,10 @@ enum class SkyblockIsland(val displayName: String, val mode: String) {
         override fun deserialize(decoder: Decoder): SkyblockIsland = decoder.decodeStructure(descriptor) {
             while (true) {
                 when (val index = decodeElementIndex(descriptor)) {
-                    1 -> return@decodeStructure entries
-                        .first { it.mode == decodeStringElement(descriptor, index) }
+                    1 -> return@decodeStructure decodeStringElement(descriptor, index).let { s ->
+                        entries
+                            .first { it.mode == s }
+                    }
 
                     CompositeDecoder.DECODE_DONE -> break
                 }

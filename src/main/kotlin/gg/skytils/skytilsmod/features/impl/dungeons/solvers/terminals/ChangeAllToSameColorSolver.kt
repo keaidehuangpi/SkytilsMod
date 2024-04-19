@@ -44,16 +44,22 @@ object ChangeAllToSameColorSolver {
         ).withIndex().associate { (i, c) ->
             c.metadata to i
         }
-    private var mostCommon = -1
+    private var mostCommon = EnumDyeColor.RED.metadata
 
     @SubscribeEvent
-    fun onBackgroundDrawn(event: GuiContainerEvent.BackgroundDrawnEvent) {
+    fun onForegroundEvent(event: GuiContainerEvent.ForegroundDrawnEvent) {
         if (!Utils.inDungeons || !Skytils.config.changeAllSameColorTerminalSolver || event.container !is ContainerChest || event.chestName != "Change all to same color!") return
         val grid = event.container.inventorySlots.filter {
             it.inventory == event.container.lowerChestInventory && it.stack?.displayName?.startsWith("§a") == true
         }
-        mostCommon =
-            ordering.keys.maxByOrNull { c -> grid.count { it.stack?.metadata == c } } ?: EnumDyeColor.RED.metadata
+        val counts = ordering.keys.associateWith { c -> grid.count { it.stack?.metadata == c } }
+        val currentPath = counts[mostCommon]!!
+        val (candidate, maxCount) = counts.maxBy { it.value }
+
+        if (maxCount > currentPath) {
+            mostCommon = candidate
+        }
+
         val targetIndex = ordering[mostCommon]!!
         val mapping = grid.filter { it.stack.metadata != mostCommon }.associateWith { slot ->
             val stack = slot.stack
@@ -62,6 +68,7 @@ object ChangeAllToSameColorSolver {
             val otherCycle = -((myIndex - targetIndex) % ordering.size + ordering.size) % ordering.size
             normalCycle to otherCycle
         }
+        GlStateManager.pushMatrix()
         GlStateManager.translate(0f, 0f, 299f)
         for ((slot, clicks) in mapping) {
             var betterOpt = if (clicks.first > -clicks.second) clicks.second else clicks.first
@@ -91,7 +98,7 @@ object ChangeAllToSameColorSolver {
             GlStateManager.enableLighting()
             GlStateManager.enableDepth()
         }
-        GlStateManager.translate(0f, 0f, -299f)
+        GlStateManager.popMatrix()
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)

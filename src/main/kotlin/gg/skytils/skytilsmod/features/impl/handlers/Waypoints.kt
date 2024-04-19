@@ -17,6 +17,8 @@
  */
 package gg.skytils.skytilsmod.features.impl.handlers
 
+import com.aayushatharva.brotli4j.encoder.BrotliOutputStream
+import com.aayushatharva.brotli4j.encoder.Encoder
 import gg.essential.elementa.utils.withAlpha
 import gg.essential.universal.UGraphics
 import gg.essential.universal.UMatrixStack
@@ -25,8 +27,12 @@ import gg.skytils.skytilsmod.commands.impl.OrderedWaypointCommand
 import gg.skytils.skytilsmod.core.PersistentSave
 import gg.skytils.skytilsmod.core.tickTimer
 import gg.skytils.skytilsmod.events.impl.skyblock.LocrawReceivedEvent
+import gg.skytils.skytilsmod.earlytweaker.DependencyLoader
 import gg.skytils.skytilsmod.utils.*
-import kotlinx.serialization.*
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.*
 import net.minecraft.util.BlockPos
 import net.minecraftforge.client.event.RenderWorldLastEvent
@@ -37,11 +43,18 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent
 import org.apache.commons.codec.binary.Base64
 import org.apache.commons.codec.binary.Base64InputStream
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
+import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
+import org.apache.commons.compress.compressors.gzip.GzipParameters
+import org.brotli.dec.BrotliInputStream
 import java.awt.Color
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.Reader
 import java.io.Writer
-import java.util.TreeSet
+import java.nio.file.Path
+import java.util.zip.Deflater
+import kotlin.io.path.name
+import kotlin.io.path.outputStream
 
 object Waypoints : PersistentSave(File(Skytils.modDir, "waypoints.json")) {
     val categories = HashSet<WaypointCategory>()
@@ -57,9 +70,19 @@ object Waypoints : PersistentSave(File(Skytils.modDir, "waypoints.json")) {
             val version = str.substringBefore(')').substringAfter('V').toIntOrNull() ?: 0
             val content = str.substringAfter(':')
 
+            val bombChecker = DecompressionBombChecker(100)
             val data = when (version) {
                 1 -> {
-                    GzipCompressorInputStream(Base64InputStream(content.byteInputStream())).use {
+                    bombChecker.wrapOutput(GzipCompressorInputStream(bombChecker.wrapInput(Base64InputStream(content.byteInputStream())))).use {
+                        it.readBytes().decodeToString()
+                    }
+                }
+                2 -> {
+                    val wrapped = bombChecker.wrapInput(Base64InputStream(content.byteInputStream()))
+
+                    val inputStream = BrotliInputStream(wrapped)
+
+                    bombChecker.wrapOutput(inputStream).use {
                         it.readBytes().decodeToString()
                     }
                 }
@@ -123,6 +146,77 @@ object Waypoints : PersistentSave(File(Skytils.modDir, "waypoints.json")) {
         return categories
     }
 
+    @OptIn(ExperimentalSerializationApi::class)
+    fun getWaypointsFromFile(file: File): CategoryList {
+        val version = file.nameWithoutExtension.substringAfterLast(".V").toIntOrNull() ?: 0
+
+        val bombChecker = DecompressionBombChecker(100)
+        val inputStream = when (version) {
+            2 -> {
+                val wrapped = bombChecker.wrapInput(file.inputStream())
+
+                val inputStream = BrotliInputStream(wrapped)
+
+                bombChecker.wrapOutput(inputStream)
+            }
+
+            else -> throw IllegalArgumentException("Unknown version $version")
+        }
+
+        return json.decodeFromStream<CategoryList>(inputStream)
+    }
+
+    fun getStringFromWaypoints(categories: Set<WaypointCategory>, version: Int): String {
+        val str = json.encodeToString(CategoryList(categories))
+            .lines().joinToString("", transform = String::trim)
+
+        val data = when (version) {
+            2 -> {
+                if (!DependencyLoader.hasNativeBrotli) error("Brotli encoder is not available")
+                Base64.encodeBase64String(ByteArrayOutputStream().use { bs ->
+                    BrotliOutputStream(bs, Encoder.Parameters().apply {
+                        // setMode(Encoder.Mode.TEXT) for smaller values this actually makes the compressed data larger, larger values have no effect
+                        setQuality(11)
+                    }).use {
+                        it.write(str.encodeToByteArray())
+                    }
+                    bs.toByteArray()
+                })
+            }
+
+            1 -> {
+                Base64.encodeBase64String(ByteArrayOutputStream().use { bs ->
+                    GzipCompressorOutputStream(bs, GzipParameters().apply {
+                        compressionLevel = Deflater.BEST_COMPRESSION
+                    }).use { gs ->
+                        gs.write(str.encodeToByteArray())
+                    }
+                    bs.toByteArray()
+                })
+            }
+
+            else -> throw IllegalArgumentException("Unknown version $version")
+        }
+
+
+        return "<Skytils-Waypoint-Data>(V${version}):${data}"
+    }
+
+    fun writeWaypointsToFile(categoryList: CategoryList, path: Path, version: Int) {
+        val realPath = if (!path.name.endsWith(".V$version.SkytilsWaypoints")) path.resolveSibling("${path.name}.V$version.SkytilsWaypoints") else path
+        when (version) {
+            2 -> {
+                if (!DependencyLoader.hasNativeBrotli) error ("Brotli encoder is not available")
+                BrotliOutputStream(realPath.outputStream(), Encoder.Parameters().apply {
+                    setQuality(11)
+                }).use {
+                    it.write(json.encodeToString(categoryList).encodeToByteArray())
+                }
+            }
+            else -> throw IllegalArgumentException("Unknown version $version")
+        }
+    }
+
     fun computeVisibleWaypoints() {
         if (!Utils.inSkyblock) {
             visibleWaypoints = emptyList()
@@ -137,10 +231,10 @@ object Waypoints : PersistentSave(File(Skytils.modDir, "waypoints.json")) {
     }
 
     @SubscribeEvent
-    fun onWorldChange(event: WorldEvent.Load) {
+    fun onWorldChange(event: WorldEvent.Unload) {
         visibleWaypoints = emptyList()
     }
-    
+
     @SubscribeEvent
     fun onLocraw(event: LocrawReceivedEvent) {
         tickTimer(20, task = ::computeVisibleWaypoints)

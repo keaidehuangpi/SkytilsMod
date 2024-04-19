@@ -18,6 +18,7 @@
 
 package gg.skytils.skytilsmod.tweaker;
 
+import gg.skytils.skytilsmod.earlytweaker.SkytilsEarlyTweaker;
 import kotlin.KotlinVersion;
 import kotlin.text.StringsKt;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
@@ -27,8 +28,10 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.Map;
 
 import static gg.skytils.skytilsmod.tweaker.TweakerUtil.exit;
@@ -149,7 +152,18 @@ public class SkytilsLoadingPlugin implements IFMLLoadingPlugin {
                             }
                         }
                     });
-                    showMessage(kotlinErrorMessage + "<br>The culprit seems to be " + name + "<br>It bundles version " + KotlinVersion.CURRENT + "</p></html>", openModFolder, watchVideo);
+                    JButton tryAutoFix = new JButton("Try Auto Fix");
+                    tryAutoFix.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            try {
+                                Files.createFile(SkytilsEarlyTweaker.essentialAutoUpdateFlag.toPath());
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    });
+                    showMessage(kotlinErrorMessage + "<br>The culprit seems to be " + name + "<br>It bundles version " + KotlinVersion.CURRENT + "</p></html>", openModFolder, watchVideo, tryAutoFix);
                 } else {
                     showMessage(kotlinErrorMessage + "<br>The culprit seems to be " + name + "<br>It bundles version " + KotlinVersion.CURRENT + "</p></html>", openModFolder);
                 }

@@ -84,9 +84,9 @@ object BlazeSolver {
                     val blazeZ = blaze.posZ.toInt()
                     val xRange = blazeX - 13..blazeX + 13
                     val zRange = blazeZ - 13..blazeZ + 13
+                    val y1 = 70 + diffY
+                    val y2 = 69 - diffY
                     findChest@ for (te in mc.theWorld.loadedTileEntityList) {
-                        val y1 = 70 + diffY
-                        val y2 = 69 - diffY
                         if ((te.pos.y == y1 || te.pos.y == y2) && te is TileEntityChest && te.numPlayersUsing == 0 && te.pos.x in xRange && te.pos.z in zRange
                         ) {
                             val pos = te.pos
@@ -240,12 +240,22 @@ object BlazeSolver {
     }
 
     @SubscribeEvent
-    fun onWorldChange(event: WorldEvent.Load) {
+    fun onWorldChange(event: WorldEvent.Unload) {
         orderedBlazes.clear()
         blazeMode = 0
         blazeChest = null
         impossible = false
         lastKilledBlazeHp = 0
+    }
+
+    @SubscribeEvent
+    fun onPuzzleReset(event: DungeonEvent.PuzzleEvent.Reset) {
+        if (event.puzzle == "Higher Or Lower") {
+            orderedBlazes.clear()
+            impossible = false
+            lastKilledBlazeHp = 0
+            calcOrder()
+        }
     }
 
     data class ShootableBlaze(@JvmField var blaze: EntityBlaze, var health: Int)

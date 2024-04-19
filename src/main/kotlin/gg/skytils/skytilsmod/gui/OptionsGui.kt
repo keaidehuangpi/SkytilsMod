@@ -30,10 +30,17 @@ import gg.essential.elementa.dsl.*
 import gg.essential.universal.UDesktop
 import gg.essential.universal.UKeyboard
 import gg.skytils.skytilsmod.Skytils
+import gg.skytils.skytilsmod.features.impl.dungeons.catlas.core.CatlasConfig
+import gg.skytils.skytilsmod.features.impl.funny.skytilsplus.SkytilsPlus
 import gg.skytils.skytilsmod.gui.components.SimpleButton
 import gg.skytils.skytilsmod.gui.editing.ElementaEditingGui
+import gg.skytils.skytilsmod.gui.editing.VanillaEditingGui
+import gg.skytils.skytilsmod.gui.features.*
+import gg.skytils.skytilsmod.gui.waypoints.WaypointsGui
+import gg.skytils.skytilsmod.utils.SuperSecretSettings
 import gg.skytils.skytilsmod.utils.Utils
 import gg.skytils.skytilsmod.utils.openGUI
+import gg.skytils.skytilsmod.utils.toStringIfTrue
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiScreen
 import java.net.URI
@@ -42,23 +49,12 @@ class OptionsGui(val parent: GuiScreen? = null) :
     WindowScreen(ElementaVersion.V2, newGuiScale = EssentialAPI.getGuiUtil().getGuiScale()) {
 
     private val skytilsText: UIText =
-        UIText(if (Utils.isBSMod) "BSMod" else "Skytils", shadow = false).childOf(window).constrain {
+        UIText(if (Utils.isBSMod) "BSMod${"+".toStringIfTrue(SkytilsPlus.redeemed)}" else "Skytils", shadow = false).childOf(window).constrain {
             x = CenterConstraint()
             y = RelativeConstraint(0.075f)
             textScale = basicTextScaleConstraint { window.getHeight() / 40 }
         }
-    private val order = arrayOf(
-        UKeyboard.KEY_UP,
-        UKeyboard.KEY_UP,
-        UKeyboard.KEY_DOWN,
-        UKeyboard.KEY_DOWN,
-        UKeyboard.KEY_LEFT,
-        UKeyboard.KEY_RIGHT,
-        UKeyboard.KEY_LEFT,
-        UKeyboard.KEY_RIGHT,
-        UKeyboard.KEY_B,
-        UKeyboard.KEY_A
-    )
+
     private var orderIndex = 0
 
     init {
@@ -86,7 +82,7 @@ class OptionsGui(val parent: GuiScreen? = null) :
         }.onMouseClick {
             mc.displayGuiScreen(
                 if (it.mouseButton == 1) ElementaEditingGui()
-                else LocationEditGui()
+                else VanillaEditingGui()
             )
         }
         SimpleButton("Edit Key Shortcuts").childOf(window).constrain {
@@ -129,6 +125,14 @@ class OptionsGui(val parent: GuiScreen? = null) :
         }.onMouseClick {
             mc.displayGuiScreen(EnchantNamesGui())
         }
+        SimpleButton("Edit Catlas").childOf(window).constrain {
+            x = CenterConstraint()
+            y = SiblingConstraint() + 2.pixels()
+            width = 200.pixels()
+            height = 20.pixels()
+        }.onMouseClick {
+            mc.displayGuiScreen(CatlasConfig.gui())
+        }
         SimpleButton("Open Config Folder").childOf(window).constrain {
             x = CenterConstraint()
             y = SiblingConstraint() + 2.pixels()
@@ -165,12 +169,33 @@ class OptionsGui(val parent: GuiScreen? = null) :
                 UDesktop.browse(URI("https://github.com/Skytils/SkytilsMod"))
             }
         }
+        SimpleButton("Legal").childOf(window).constrain {
+            x = 3.pixels
+            y = basicYConstraint { window.getHeight() - this.getHeight() - 3 }
+            width = RelativeConstraint(0.1f)
+            height = RelativeConstraint(0.05f)
+        }.onMouseClick {
+            mc.displayGuiScreen(LegalGui())
+        }
+        SimpleButton("ur a wizard Harry", true, true).childOf(window).constrain {
+            x = 3.pixels
+            y = basicYConstraint { window.getHeight() - this.getHeight() * 2 - 6 }
+            width = RelativeConstraint(0.1f)
+            height = RelativeConstraint(0.05f)
+        }.onMouseClick {
+            Skytils.displayScreen = SuperSecretGui()
+        }.apply {
+            (this as SimpleButton).text.constrain {
+                width = RelativeConstraint(0.9f)
+            }
+            if (!SuperSecretSettings.chamberOfSecrets) hide(true)
+        }
         animate()
     }
 
     override fun onKeyPressed(keyCode: Int, typedChar: Char, modifiers: UKeyboard.Modifiers?) {
         super.onKeyPressed(keyCode, typedChar, modifiers)
-        if (keyCode == order[orderIndex]) orderIndex++
+        if (keyCode == order[orderIndex] || keyCode == gamerOrder[orderIndex]) orderIndex++
         else orderIndex = 0
         if (orderIndex == order.size) {
             orderIndex = 0
@@ -194,5 +219,32 @@ class OptionsGui(val parent: GuiScreen? = null) :
             textScale = basicTextScaleConstraint { window.getHeight() / 40 }
         }
         super.setWorldAndResolution(mc, width, height)
+    }
+
+    companion object {
+        private val order = arrayOf(
+            UKeyboard.KEY_UP,
+            UKeyboard.KEY_UP,
+            UKeyboard.KEY_DOWN,
+            UKeyboard.KEY_DOWN,
+            UKeyboard.KEY_LEFT,
+            UKeyboard.KEY_RIGHT,
+            UKeyboard.KEY_LEFT,
+            UKeyboard.KEY_RIGHT,
+            UKeyboard.KEY_B,
+            UKeyboard.KEY_A
+        )
+        private val gamerOrder = arrayOf(
+            UKeyboard.KEY_W,
+            UKeyboard.KEY_W,
+            UKeyboard.KEY_S,
+            UKeyboard.KEY_S,
+            UKeyboard.KEY_A,
+            UKeyboard.KEY_D,
+            UKeyboard.KEY_A,
+            UKeyboard.KEY_D,
+            UKeyboard.KEY_B,
+            UKeyboard.KEY_A
+        )
     }
 }

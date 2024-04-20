@@ -40,9 +40,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
@@ -180,6 +177,7 @@ public abstract class MixinItemRenderer {
                         (itemToRender.getItem() instanceof ItemBlock && Config.INSTANCE.getEverythingBlockBlocks())
                                 || (itemToRender.getItem() instanceof ItemSkull && Config.INSTANCE.getEverythingBlockSkull())
                                 || (itemToRender.getItem() instanceof ItemTool && Config.INSTANCE.getEverythingBlockTools())
+                                || (itemToRender.getItem() instanceof ItemTool && Config.INSTANCE.getEverythingBlockOthers())
                 )
                 ) {
                     renderingBlocked(f, f1,f2);

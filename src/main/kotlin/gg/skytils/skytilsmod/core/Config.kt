@@ -4502,6 +4502,14 @@ object Config : Vigilant(
     var everythingBlockSkull = true
 
     @Property(
+        type = PropertyType.SWITCH, name = "Others",
+        description = "Show block animation on other items",
+        category = "General", subcategory = "Other",
+        searchTags = ["everything,block", "everythingblock"]
+    )
+    var everythingBlockOthers = true
+
+    @Property(
         type = PropertyType.SWITCH, name = "BigGod",
         description = "dashen.",
         category = "General", subcategory = "Other",
@@ -4708,6 +4716,7 @@ object Config : Vigilant(
             "everythingBlockBlocks",
             "everythingBlockTools",
             "everythingBlockSkull",
+            "everythingBlockOthers"
         ).forEach { propertyName -> addDependency(propertyName, "everythingBlock") }
         listOf(
             "bigGodUseHead",

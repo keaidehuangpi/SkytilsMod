@@ -177,7 +177,7 @@ public abstract class MixinItemRenderer {
                         (itemToRender.getItem() instanceof ItemBlock && Config.INSTANCE.getEverythingBlockBlocks())
                                 || (itemToRender.getItem() instanceof ItemSkull && Config.INSTANCE.getEverythingBlockSkull())
                                 || (itemToRender.getItem() instanceof ItemTool && Config.INSTANCE.getEverythingBlockTools())
-                                || (itemToRender.getItem() instanceof ItemTool && Config.INSTANCE.getEverythingBlockOthers())
+                                || (((!(itemToRender.getItem() instanceof ItemSkull)) && (!(itemToRender.getItem() instanceof ItemTool))) && Config.INSTANCE.getEverythingBlockOthers())
                 )
                 ) {
                     renderingBlocked(f, f1,f2);

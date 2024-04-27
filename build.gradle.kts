@@ -34,7 +34,7 @@ plugins {
     signing
 }
 
-version = "1.9.2"
+version = "1.9.4"
 group = "gg.skytils"
 
 repositories {
@@ -66,10 +66,10 @@ loom {
             property("mixin.debug.verbose", "true")
             property("mixin.debug.export", "true")
             property("mixin.dumpTargetOnFailure", "true")
+            property("fml.debugAccessTransformer", "true")
             property("legacy.debugClassLoading", "true")
             property("legacy.debugClassLoadingSave", "true")
             property("legacy.debugClassLoadingFiner", "true")
-            programArgs("--tweakClass", "gg.skytils.earlytweaker.EarlyTweakerLoader")
             programArgs("--tweakClass", "gg.skytils.skytilsmod.tweaker.SkytilsTweaker")
             programArgs("--mixin", "mixins.skytils.json")
             programArgs("--mixin", "mixins.skytils-events.json")
@@ -151,9 +151,6 @@ dependencies {
     shadowMe("org.brotli:dec:0.1.2")
     shadowMe("com.aayushatharva.brotli4j:brotli4j:1.16.0")
 
-    shadowMe(project(":earlytweaker")) {
-        isTransitive = false
-    }
     shadowMe(project(":events"))
     shadowMe(project(":hypixel-api:types"))
 

@@ -32,23 +32,17 @@ import gg.skytils.skytilsmod.features.impl.dungeons.catlas.handlers.DungeonInfo
 import gg.skytils.skytilsmod.features.impl.handlers.MayorInfo
 import gg.skytils.skytilsmod.listeners.DungeonListener
 import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorC0EPacketClickWindow
-import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorEnumDyeColor
 import gg.skytils.skytilsmod.utils.*
 import gg.skytils.skytilsmod.utils.ItemUtil.setLore
 import gg.skytils.skytilsmod.utils.Utils.equalsOneOf
+import gg.skytils.skytilsmod.utils.cheats.ColorUtils
 import gg.skytils.skytilsmod.utils.cheats.Nametags
 import gg.skytils.skytilsmod.utils.graphics.ScreenRenderer
 import gg.skytils.skytilsmod.utils.graphics.SmartFontRenderer.TextAlignment
 import gg.skytils.skytilsmod.utils.graphics.colors.CommonColors
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import gg.skytils.skytilsmod.utils.cheats.ColorUtils
-import net.minecraft.block.BlockStainedGlass
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.entity.Entity
 import net.minecraft.entity.boss.BossStatus
 import net.minecraft.entity.item.EntityArmorStand
 import net.minecraft.entity.item.EntityItem
@@ -60,17 +54,13 @@ import net.minecraft.event.HoverEvent
 import net.minecraft.init.Blocks
 import net.minecraft.init.Items
 import net.minecraft.inventory.ContainerChest
-import net.minecraft.item.EnumDyeColor
 import net.minecraft.item.ItemSkull
 import net.minecraft.item.ItemStack
 import net.minecraft.network.play.client.C0EPacketClickWindow
 import net.minecraft.network.play.server.*
-import net.minecraft.potion.Potion
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
 import net.minecraft.util.ChatComponentText
-import net.minecraft.util.EnumChatFormatting
-import net.minecraft.world.World
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.client.event.GuiOpenEvent
 import net.minecraftforge.client.event.RenderLivingEvent
@@ -683,6 +673,16 @@ object DungeonFeatures {
         terracottaSpawns.clear()
         fakeDungeonMap = null
         intendedItemStack = null
+    }
+
+    @SubscribeEvent
+    fun onPacket(event: MainReceivePacketEvent<*, *>) {
+        if (!Utils.inDungeons || !Skytils.config.sendMessageOnMelody) return
+        if (event.packet is S2DPacketOpenWindow) {
+            if (event.packet.windowTitle.equals("Click the button on time!")) {
+                Skytils.sendMessageQueue.add(Skytils.config.messageMelody)
+            }
+        }
     }
 
     class SpiritBearSpawnTimer : GuiElement("Spirit Bear Spawn Timer", x = 0.05f, y = 0.4f) {

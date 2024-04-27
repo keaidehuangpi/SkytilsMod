@@ -390,7 +390,8 @@ class Skytils {
             Projectiles,
             NametagsPlayers,
             ChestAnnounce,
-            KuudraJoinAnnounce
+            KuudraJoinAnnounce,
+            SoundBlocker
         ).forEach(MinecraftForge.EVENT_BUS::register)
         GuiCapeManager.load()
     }
@@ -429,6 +430,7 @@ class Skytils {
         cch.registerCommand(ScamCheckCommand)
         cch.registerCommand(SlayerCommand)
         cch.registerCommand(TrophyFishCommand)
+        cch.registerCommand(BlockSoundCommand)
 
         if (!cch.commands.containsKey("armorcolor")) {
             cch.registerCommand(ArmorColorCommand)

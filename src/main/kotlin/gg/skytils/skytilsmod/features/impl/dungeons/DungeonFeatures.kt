@@ -28,6 +28,7 @@ import gg.skytils.skytilsmod.core.structure.GuiElement
 import gg.skytils.skytilsmod.events.impl.*
 import gg.skytils.skytilsmod.events.impl.GuiContainerEvent.SlotClickEvent
 import gg.skytils.skytilsmod.events.impl.PacketEvent.ReceiveEvent
+import gg.skytils.skytilsmod.features.impl.dungeons.solvers.BlazeSolver
 import gg.skytils.skytilsmod.features.impl.handlers.MayorInfo
 import gg.skytils.skytilsmod.listeners.DungeonListener
 import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorEnumDyeColor
@@ -450,14 +451,15 @@ object DungeonFeatures {
     }
     @SubscribeEvent
     fun onInteract(e:PlayerInteractEvent) {
+        if (e.entityPlayer.uniqueID != mc.thePlayer.uniqueID) {
+            return
+        }
         val item: ItemStack = mc.thePlayer.heldItem
-        if (item != null) {
-            val extraAttr = getExtraAttributes(item)
-            val itemId = getSkyBlockItemID(extraAttr)
+        val extraAttr = getExtraAttributes(item) ?: return
+        val itemId = getSkyBlockItemID(extraAttr) ?: return
 
-            if (itemId == "BLOCK_ZAPPER") {
-                Skytils.sendMessageQueue.add("/undozap")
-            }
+        if (itemId == "ARCHITECT_FIRST_DRAFT") {
+            BlazeSolver.reset()
         }
     }
 

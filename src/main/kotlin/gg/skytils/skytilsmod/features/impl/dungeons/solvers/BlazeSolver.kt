@@ -241,6 +241,10 @@ object BlazeSolver {
 
     @SubscribeEvent
     fun onWorldChange(event: WorldEvent.Load) {
+        reset()
+    }
+
+    public fun reset() {
         orderedBlazes.clear()
         blazeMode = 0
         blazeChest = null

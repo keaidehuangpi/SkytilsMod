@@ -454,7 +454,7 @@ object DungeonFeatures {
         if (e.entityPlayer.uniqueID != mc.thePlayer.uniqueID) {
             return
         }
-        val item: ItemStack = mc.thePlayer.heldItem
+        val item: ItemStack = mc.thePlayer.heldItem ?: return
         val extraAttr = getExtraAttributes(item) ?: return
         val itemId = getSkyBlockItemID(extraAttr) ?: return
 

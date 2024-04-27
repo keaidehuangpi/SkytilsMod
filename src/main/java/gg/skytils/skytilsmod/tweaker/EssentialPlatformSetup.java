@@ -19,26 +19,15 @@
 package gg.skytils.skytilsmod.tweaker;
 
 import gg.essential.universal.UDesktop;
-import gg.skytils.earlytweaker.Constants;
-import gg.skytils.earlytweaker.EarlyTweakerLoader;
 import gg.skytils.skytilsmod.Reference;
-import gg.skytils.skytilsmod.earlytweaker.SkytilsEarlyTweakerRegistrant;
 import net.minecraft.launchwrapper.Launch;
-import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Locale;
-import java.util.Objects;
 
 import static gg.skytils.skytilsmod.tweaker.TweakerUtil.*;
 
@@ -58,42 +47,12 @@ public class EssentialPlatformSetup {
     @SuppressWarnings("unused")
     public static void setup() throws Throwable {
         boolean isDev = Launch.classLoader.findResource("net/minecraft/world/World.class") != null;
-        if (!isDev) {
-            EarlyTweakerLoader.ensureVersion(Constants.VERSION, SkytilsEarlyTweakerRegistrant.class);
-        } else {
-            EarlyTweakerLoader.ensureLoaded(SkytilsEarlyTweakerRegistrant.class);
-        }
 
         try {
-            String ver = System.getProperty("java.runtime.version", "unknown");
-            String javaLoc = System.getProperty("java.home");
-            if (ver.contains("1.8.0_51") || javaLoc.contains("jre-legacy")) {
-                System.out.println("Minecraft is running on legacy Java 8");
-                Path keyStoreLoc = Paths.get("./config/skytils/updates/files/skytilscacerts.jks");
-                File keyStoreFile = keyStoreLoc.toFile();
-                //check if the file matches what's in the jar based on filesize
-                if (!keyStoreFile.exists()) {
-                    System.out.println("Skytils is attempting to run keytool.");
-                    Files.createDirectories(keyStoreLoc.getParent());
-                    try (InputStream in = EssentialPlatformSetup.class.getResourceAsStream("/skytilscacerts.jks"); OutputStream os = Files.newOutputStream(keyStoreLoc)) {
-                        IOUtils.copy(Objects.requireNonNull(in), os);
-                    }
-                    String os = System.getProperty("os.name", "unknown");
-
-                    Path keyStorePath = Paths.get(javaLoc, "lib", "security", "cacerts").toAbsolutePath();
-                    Path keyToolPath = Paths.get(javaLoc, "bin", (os.toLowerCase(Locale.ENGLISH).startsWith("windows") ? "keytool.exe" : "keytool")).toAbsolutePath();
-                    File log = new File("./config/skytils/updates/files/sslfix-" + System.currentTimeMillis() + ".log");
-                    new ProcessBuilder()
-                            .command(keyToolPath.toString(), "-importkeystore", "-srckeystore", keyStoreFile.getAbsolutePath(), "-destkeystore", keyStorePath.toString(), "-srcstorepass", "skytilsontop", "-deststorepass", "changeit", "-noprompt")
-                            .redirectOutput(log)
-                            .redirectError(log)
-                            .start().waitFor();
-                    System.out.println("A reboot of Minecraft is required for the code to work, force closing the game");
-                    exit();
-                }
-            }
+            DependencyLoader.loadDependencies();
         } catch (Throwable t) {
             t.printStackTrace();
+            throw t;
         }
 
         registerTransformerExclusions(

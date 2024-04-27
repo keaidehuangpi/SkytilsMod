@@ -33,6 +33,7 @@ import gg.skytils.skytilsmod.listeners.DungeonListener
 import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorEnumDyeColor
 import gg.skytils.skytilsmod.utils.*
 import gg.skytils.skytilsmod.utils.Utils.equalsOneOf
+import gg.skytils.skytilsmod.utils.cheats.ColorUtils
 import gg.skytils.skytilsmod.utils.cheats.Nametags
 import gg.skytils.skytilsmod.utils.graphics.ScreenRenderer
 import gg.skytils.skytilsmod.utils.graphics.SmartFontRenderer.TextAlignment
@@ -40,7 +41,6 @@ import gg.skytils.skytilsmod.utils.graphics.colors.CommonColors
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import gg.skytils.skytilsmod.utils.cheats.ColorUtils
 import net.minecraft.block.BlockStainedGlass
 import net.minecraft.client.entity.EntityOtherPlayerMP
 import net.minecraft.client.gui.GuiScreen
@@ -751,6 +751,16 @@ object DungeonFeatures {
         blazes = 0
         hasClearedText = false
         terracottaSpawns.clear()
+    }
+
+    @SubscribeEvent
+    fun onPacket(event: MainReceivePacketEvent<*, *>) {
+        if (!Utils.inDungeons || !Skytils.config.sendMessageOnMelody) return
+        if (event.packet is S2DPacketOpenWindow) {
+            if (event.packet.windowTitle.equals("Click the button on time!")) {
+                Skytils.sendMessageQueue.add(Skytils.config.messageMelody)
+            }
+        }
     }
 
     class SpiritBearSpawnTimer : GuiElement("Spirit Bear Spawn Timer", x = 0.05f, y = 0.4f) {

@@ -3323,6 +3323,42 @@ object Config : Vigilant(
     )
     var maxCPS = 9
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Send message on getting the melody term",
+        description = "Worst puzzle.",
+        category = "Dungeons", subcategory = "Quality of Life"
+    )
+    var sendMessageOnMelody = false
+
+    @Property(
+        type = PropertyType.PARAGRAPH, name = "Message getting the melody term",
+        description = "Customize the message sent on getting the melody term.",
+        category = "Dungeons", subcategory = "Quality of Life",
+    )
+    var messageMelody = "Melody"
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Sound Blocker",
+        description = "Block some of the unwanted sounds!",
+        category = "General", subcategory = "Other",
+    )
+    var soundblocker = false
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Edit blocked sounds",
+        description = "To edit blocked sounds, please enable this and check your chat when you receive sounds from the server!",
+        category = "General", subcategory = "Other",
+    )
+    var editSoundBlocker = false
+
+    @Property(
+        type = PropertyType.SELECTOR, name = "Mode of Soundblocker",
+        description = "Enable this,then when you add a sound to soundblocker,all sound of its type will be blocked instead of only the sound with the pitch of the sound you added!",
+        category = "General", subcategory = "Other",
+        options = ["onlyThisPitch", "ALLOFTHISTYPE"]
+    )
+    var soundBlockerEditMode = 0
+
 
 
 
@@ -3334,6 +3370,7 @@ object Config : Vigilant(
 
         addDependency("itemRarityOpacity", "showItemRarity")
         addDependency("itemRarityShape", "showItemRarity")
+        addDependency("messageMelody", "sendMessageOnMelody")
 
         listOf(
             "showLowestBINPrice",

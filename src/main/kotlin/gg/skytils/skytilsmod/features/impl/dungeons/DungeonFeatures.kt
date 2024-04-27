@@ -32,6 +32,8 @@ import gg.skytils.skytilsmod.features.impl.handlers.MayorInfo
 import gg.skytils.skytilsmod.listeners.DungeonListener
 import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorEnumDyeColor
 import gg.skytils.skytilsmod.utils.*
+import gg.skytils.skytilsmod.utils.ItemUtil.getExtraAttributes
+import gg.skytils.skytilsmod.utils.ItemUtil.getSkyBlockItemID
 import gg.skytils.skytilsmod.utils.Utils.equalsOneOf
 import gg.skytils.skytilsmod.utils.cheats.ColorUtils
 import gg.skytils.skytilsmod.utils.cheats.Nametags
@@ -59,6 +61,7 @@ import net.minecraft.init.Items
 import net.minecraft.inventory.ContainerChest
 import net.minecraft.item.EnumDyeColor
 import net.minecraft.item.ItemSkull
+import net.minecraft.item.ItemStack
 import net.minecraft.network.play.server.*
 import net.minecraft.potion.Potion
 import net.minecraft.util.AxisAlignedBB
@@ -72,6 +75,7 @@ import net.minecraftforge.client.event.RenderLivingEvent
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
 import net.minecraftforge.event.entity.player.ItemTooltipEvent
+import net.minecraftforge.event.entity.player.PlayerInteractEvent
 import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -409,6 +413,12 @@ object DungeonFeatures {
                         ClickEvent(ClickEvent.Action.RUN_COMMAND, "/skytilscopy $unformatted")
                 }
             }
+            if (Skytils.config.sendMessageOnLeap && unformatted.startsWith("You have teleported to") && unformatted.endsWith(
+                    "!"
+                )
+            ) {
+                Skytils.sendMessageQueue.add(unformatted)
+            }
             if (Skytils.config.hideF4Spam && unformatted.startsWith("[CROWD]") && thornMissMessages.none {
                     unformatted.contains(
                         it,
@@ -435,6 +445,18 @@ object DungeonFeatures {
                         terracottaSpawns.clear()
                     }
                 }
+            }
+        }
+    }
+    @SubscribeEvent
+    fun onInteract(e:PlayerInteractEvent) {
+        val item: ItemStack = mc.thePlayer.heldItem
+        if (item != null) {
+            val extraAttr = getExtraAttributes(item)
+            val itemId = getSkyBlockItemID(extraAttr)
+
+            if (itemId == "BLOCK_ZAPPER") {
+                Skytils.sendMessageQueue.add("/undozap")
             }
         }
     }

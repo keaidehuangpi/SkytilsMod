@@ -3359,6 +3359,13 @@ object Config : Vigilant(
     )
     var soundBlockerEditMode = 0
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Send message on leap",
+        description = "Says when you leap to someone?",
+        category = "Dungeons", subcategory = "Quality of Life"
+    )
+    var sendMessageOnLeap = false
+
 
 
 
@@ -3371,6 +3378,10 @@ object Config : Vigilant(
         addDependency("itemRarityOpacity", "showItemRarity")
         addDependency("itemRarityShape", "showItemRarity")
         addDependency("messageMelody", "sendMessageOnMelody")
+        listOf(
+            "soundBlockerEditMode",
+            "editSoundBlocker",
+        ).forEach { propertyName -> addDependency(propertyName, "soundblocker") }
 
         listOf(
             "showLowestBINPrice",

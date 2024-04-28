@@ -30,6 +30,9 @@ object RemoveALLPlayerCommand : BaseCommand("fuckallplayers") {
             if (entity !is EntityPlayerSP) {
                 continue
             }
+            if (entity.uniqueID.equals(mc.thePlayer.uniqueID)) {
+                continue
+            }
             val targetName = stripColor(entity.displayName.formattedText)
 
             for (networkPlayerInfo in mc.netHandler.playerInfoMap) {

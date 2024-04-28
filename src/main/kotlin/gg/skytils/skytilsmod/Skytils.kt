@@ -397,6 +397,7 @@ class Skytils {
         cch.registerCommand(SlayerCommand)
         cch.registerCommand(TrophyFishCommand)
         cch.registerCommand(BlockSoundCommand)
+        cch.registerCommand(RemoveALLPlayerCommand)
 
         if (!cch.commands.containsKey("armorcolor")) {
             cch.registerCommand(ArmorColorCommand)

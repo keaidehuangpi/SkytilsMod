@@ -20,8 +20,6 @@ package gg.skytils.skytilsmod.core
 import gg.essential.universal.UDesktop
 import gg.skytils.skytilsmod.Skytils
 import gg.skytils.skytilsmod.Skytils.Companion.client
-import gg.skytils.skytilsmod.gui.RequestUpdateGui
-import gg.skytils.skytilsmod.gui.UpdateGui
 import gg.skytils.skytilsmod.utils.GithubRelease
 import gg.skytils.skytilsmod.utils.Utils
 import io.ktor.client.call.*
@@ -33,7 +31,6 @@ import io.ktor.utils.io.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import net.minecraft.client.gui.GuiMainMenu
 import net.minecraft.util.Util
 import net.minecraftforge.client.event.GuiOpenEvent
 import net.minecraftforge.fml.common.eventhandler.EventPriority
@@ -143,10 +140,10 @@ object UpdateChecker {
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     fun onGuiOpen(e: GuiOpenEvent) {
-        if (e.gui !is GuiMainMenu) return
+        /*if (e.gui !is GuiMainMenu) return
         if (updateGetter.updateObj == null) return
         if (UpdateGui.complete) return
-        Skytils.displayScreen = RequestUpdateGui()
+        Skytils.displayScreen = RequestUpdateGui()*/
     }
 
     class UpdateGetter {

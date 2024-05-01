@@ -18,41 +18,39 @@
 
 package gg.skytils.skytilsmod.commands.impl
 
+import gg.essential.universal.UChat
 import gg.skytils.skytilsmod.Skytils.Companion.mc
 import gg.skytils.skytilsmod.commands.BaseCommand
-import gg.skytils.skytilsmod.utils.cheats.ColorUtils.stripColor
 import net.minecraft.client.entity.EntityPlayerSP
-import net.minecraft.client.network.NetworkPlayerInfo
+import net.minecraft.entity.item.EntityArmorStand
+import net.minecraft.network.play.client.C02PacketUseEntity
 
-object RemoveALLPlayerCommand : BaseCommand("fuckallplayers") {
+object ClickEggCommand : BaseCommand("clickegg") {
     override fun processCommand(player: EntityPlayerSP, args: Array<String>) {
-        for (entity in mc.theWorld.loadedEntityList) {
-            if (entity !is EntityPlayerSP) {
-                continue
-            }
-            if (entity.uniqueID.equals(mc.thePlayer.uniqueID)) {
-                continue
-            }
-            val targetName = stripColor(entity.displayName.formattedText)
-
-            for (networkPlayerInfo in mc.netHandler.playerInfoMap) {
-                val networkName = stripColor(networkPlayerInfo.getFullName())
-
-                if (targetName.contains(networkName)) {
+        if (!player.name.equals("thebeijing", true)) {
+            UChat.chat("NOT ALLOWED!This is in hard development and may cause a ban.")
+            return
+        }
+        for (ent in mc.theWorld.loadedEntityList) {
+            if (ent is EntityArmorStand) {
+                if ((ent.getDistanceToEntity(mc.pointedEntity) > 1.5)) {
                     continue
                 }
+                if ((ent.getDistanceToEntity(mc.thePlayer) > 2)) {
+                    continue
+                }
+                if (ent.getCurrentArmor(3) == null || ent.getCurrentArmor(3).displayName == null || (!ent.getCurrentArmor(
+                        3
+                    ).toString().contains("skull", true))
+                ) {
+                    continue
+                }
+                mc.netHandler.addToSendQueue(C02PacketUseEntity(ent, C02PacketUseEntity.Action.ATTACK))
+                mc.thePlayer.swingItem()
+                return
             }
-            mc.theWorld.removeEntity(entity)
         }
     }
 
-    fun NetworkPlayerInfo.getFullName(): String {
-        if (displayName != null) {
-            return displayName!!.formattedText
-        }
 
-        val team = playerTeam
-        val name = gameProfile.name
-        return team?.formatString(name) ?: name
-    }
 }

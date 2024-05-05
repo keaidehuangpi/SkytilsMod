@@ -90,6 +90,7 @@ object ChatTabs {
                     ChatTab.GUILD -> "/gc "
                     ChatTab.PRIVATE -> "/r "
                     ChatTab.COOP -> "/cc "
+                    ChatTab.WXYY -> "/wxyychat "
                 }
         }
     }
@@ -236,6 +237,9 @@ object ChatTabs {
         }),
         COOP("CC", { _, formatted ->
             formatted.startsWith("§r§bCo-op > ")
+        }),
+        WXYY("W", { _, formatted ->
+            formatted.startsWith("§r§b文心一言 > ")
         });
 
         val button = CleanButton(-69420, 2 + 22 * ordinal, 0, 20, 20, text)

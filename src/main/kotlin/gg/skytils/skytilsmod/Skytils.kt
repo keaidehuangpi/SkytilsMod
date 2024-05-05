@@ -353,6 +353,7 @@ class Skytils {
             WaterBoardSolver,
             Waypoints,
             Wings,
+            WXYYChatBot,
             MouseHelperHook,
             Projectiles,
             NametagsPlayers,
@@ -397,6 +398,7 @@ class Skytils {
         cch.registerCommand(SlayerCommand)
         cch.registerCommand(TrophyFishCommand)
         cch.registerCommand(BlockSoundCommand)
+        cch.registerCommand(WXYYChatCommand)
         //cch.registerCommand(ClickEggCommand)
 
         if (!cch.commands.containsKey("armorcolor")) {

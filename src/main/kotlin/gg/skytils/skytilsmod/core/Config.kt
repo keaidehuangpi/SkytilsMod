@@ -3373,9 +3373,40 @@ object Config : Vigilant(
     )
     var sendMessageOnLeap = false
 
+    @Property(
+        type = PropertyType.SWITCH, name = "WenXinYiYan",
+        description = "A chat assistant by baidu!\n&a&l/wxyychat to use",
+        category = "Miscellaneous", subcategory = "AI Assistant"
+    )
+    var wxyy = false
 
+    @Property(
+        type = PropertyType.PARAGRAPH, name = "WenXinYiYan Assess Key",
+        description = "Assess key for WenXinYiYan",
+        category = "Miscellaneous", subcategory = "AI Assistant",
+    )
+    var wxyyak = ""
 
+    @Property(
+        type = PropertyType.PARAGRAPH, name = "WenXinYiYan Secret Key",
+        description = "Secret key for WenXinYiYan",
+        category = "Miscellaneous", subcategory = "AI Assistant",
+    )
+    var wxyysk = ""
 
+    @Property(
+        type = PropertyType.PARAGRAPH, name = "WenXinYiYan Endpoint",
+        description = "To determine your model used for WenXinYiYan.",
+        category = "Miscellaneous", subcategory = "AI Assistant",
+    )
+    var wxyyep = "completions"
+
+    @Property(
+        type = PropertyType.SWITCH, name = "Send to party",
+        description = "Let your party member know this cool stuff!",
+        category = "Miscellaneous", subcategory = "AI Assistant"
+    )
+    var wxyySendToParty = true
 
     init {
         addDependency("showEtherwarpTeleportPosColor", "showEtherwarpTeleportPos")
@@ -3389,6 +3420,12 @@ object Config : Vigilant(
             "soundBlockerEditMode",
             "editSoundBlocker",
         ).forEach { propertyName -> addDependency(propertyName, "soundblocker") }
+        listOf(
+            "wxyyak",
+            "wxyysk",
+            "wxyyep",
+            "wxyySendToParty",
+        ).forEach { propertyName -> addDependency(propertyName, "wxyy") }
 
         listOf(
             "showLowestBINPrice",

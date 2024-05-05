@@ -69,6 +69,7 @@ object ChatTabs {
 
     fun shouldAllow(component: IChatComponent): Boolean {
         if (!Utils.isOnHypixel || !Skytils.config.chatTabs) return true
+        if (!Skytils.config.blockOthers) return true
         val style = component.chatStyle
         style as ExtensionChatStyle
         if (style.chatTabType == null) {

@@ -1367,6 +1367,13 @@ object Config : Vigilant(
     var autoSwitchChatChannel = false
 
     @Property(
+        type = PropertyType.SWITCH, name = "Block others",
+        description = "Blocks chat from other channels.",
+        category = "Miscellaneous", subcategory = "Chat Tabs"
+    )
+    var blockOthers = false
+
+    @Property(
         type = PropertyType.SWITCH, name = "Copy Chat Messages",
         description = "Copy chat messages with control + click.",
         category = "Miscellaneous", subcategory = "Chat Tabs"

@@ -45,7 +45,7 @@ object WXYYChatBot {
             val match =
                 partyChatRegex.find(ColorUtils.stripColor(event.message.formattedText.stripControlCodes())) ?: return
             val msg = match.groups["msg"]?.value ?: return
-            UChat.chat("FUCK")
+            UChat.chat("§9§lAI ASSISTANT §8» §rPLEASE WAIT...")
             Thread {
                 val qianfan = Qianfan(Auth.TYPE_OAUTH, Skytils.config.wxyyak, Skytils.config.wxyysk)
                 val builder = qianfan.chatCompletion()

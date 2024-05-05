@@ -88,8 +88,8 @@ val shadowMeMod: Configuration by configurations.creating {
 }
 
 dependencies {
-    implementation("com.baidubce:qianfan:0.0.4")
     shadowMe("gg.essential:loader-launchwrapper:1.2.1")
+    shadowMe("com.baidubce:qianfan:0.0.4")
     implementation("gg.essential:essential-1.8.9-forge:14616+g169bd9af6a") {
         exclude(module = "asm")
         exclude(module = "asm-commons")

@@ -25,7 +25,6 @@ import gg.skytils.skytilsmod.Skytils
 import gg.skytils.skytilsmod.utils.Utils
 import gg.skytils.skytilsmod.utils.cheats.ColorUtils
 import gg.skytils.skytilsmod.utils.stripControlCodes
-import net.minecraft.client.gui.GuiScreen
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.fml.common.eventhandler.EventPriority
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -39,9 +38,6 @@ object WXYYChatBot {
     fun onChat(event: ClientChatReceivedEvent) {
         if (!Utils.isOnHypixel || event.type == 2.toByte()) return
         if (Skytils.config.wxyy) {
-            if (event.message.formattedText.contains("Party")) {
-                GuiScreen.setClipboardString(ColorUtils.stripColor(event.message.formattedText.stripControlCodes()))
-            }
             val match =
                 partyChatRegex.find(ColorUtils.stripColor(event.message.formattedText.stripControlCodes())) ?: return
             val msg = match.groups["msg"]?.value ?: return
@@ -51,7 +47,7 @@ object WXYYChatBot {
                 val builder = qianfan.chatCompletion()
                     .endpoint(Skytils.config.wxyyep)
                     .topP(0.2)
-                    .system("你是一个AI助手，请给我尽量简短的回复。回答所用语言请务必与我问你的时候使用的语言一致。")
+                    .system("你是一个AI助手，请给我尽量简短的回复。如果我问你问题用的是英语，请你用英语回答我")
                 val res = builder.addMessage("user", msg).execute().result
                 Skytils.sendMessageQueue.add(res)
             }.start()

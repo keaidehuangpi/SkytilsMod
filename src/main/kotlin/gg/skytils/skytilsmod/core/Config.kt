@@ -3381,8 +3381,8 @@ object Config : Vigilant(
     var wxyy = false
 
     @Property(
-        type = PropertyType.PARAGRAPH, name = "WenXinYiYan Assess Key",
-        description = "Assess key for WenXinYiYan",
+        type = PropertyType.PARAGRAPH, name = "WenXinYiYan Api Key",
+        description = "Api key for WenXinYiYan",
         category = "Miscellaneous", subcategory = "AI Assistant",
     )
     var wxyyak = ""

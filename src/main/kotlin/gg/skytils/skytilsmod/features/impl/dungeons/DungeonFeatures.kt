@@ -29,6 +29,7 @@ import gg.skytils.skytilsmod.events.impl.*
 import gg.skytils.skytilsmod.events.impl.GuiContainerEvent.SlotClickEvent
 import gg.skytils.skytilsmod.events.impl.PacketEvent.ReceiveEvent
 import gg.skytils.skytilsmod.features.impl.dungeons.solvers.BlazeSolver
+import gg.skytils.skytilsmod.features.impl.dungeons.solvers.TicTacToeSolver
 import gg.skytils.skytilsmod.features.impl.handlers.MayorInfo
 import gg.skytils.skytilsmod.listeners.DungeonListener
 import gg.skytils.skytilsmod.mixins.transformers.accessors.AccessorEnumDyeColor
@@ -460,6 +461,7 @@ object DungeonFeatures {
 
         if (itemId == "ARCHITECT_FIRST_DRAFT") {
             BlazeSolver.reset()
+            TicTacToeSolver.reset()
         }
     }
 

@@ -3408,6 +3408,13 @@ object Config : Vigilant(
     )
     var wxyySendToParty = true
 
+    @Property(
+        type = PropertyType.SWITCH, name = "Carnival aim assist",
+        description = "Automatically aims at zombies.",
+        category = "Miscellaneous", subcategory = "Carnival"
+    )
+    var carnivalAimAssist = false
+
     init {
         addDependency("showEtherwarpTeleportPosColor", "showEtherwarpTeleportPos")
 

@@ -359,7 +359,8 @@ class Skytils {
             NametagsPlayers,
             ChestAnnounce,
             KuudraJoinAnnounce,
-            SoundBlocker
+            SoundBlocker,
+            AimAssist
         ).forEach(MinecraftForge.EVENT_BUS::register)
         GuiCapeManager.load()
     }

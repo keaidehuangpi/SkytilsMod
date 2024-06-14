@@ -34,7 +34,7 @@ plugins {
     signing
 }
 
-version = "1.9.7"
+version = "1.9.8"
 group = "gg.skytils"
 
 repositories {
@@ -73,11 +73,12 @@ loom {
             programArgs("--tweakClass", "gg.skytils.skytilsmod.tweaker.SkytilsTweaker")
             programArgs("--mixin", "mixins.skytils.json")
             programArgs("--mixin", "mixins.skytils-events.json")
+            programArgs("--mixin", "mixins.skytils-init.json")
         }
         remove(getByName("server"))
     }
     forge {
-        mixinConfig("mixins.skytils.json", "mixins.skytils-events.json")
+        mixinConfig("mixins.skytils.json", "mixins.skytils-events.json", "mixins.skytils-init.json")
     }
     mixin {
         defaultRefmapName = "mixins.skytils.refmap.json"
@@ -191,7 +192,7 @@ tasks {
                     "FMLCorePlugin" to "gg.skytils.skytilsmod.tweaker.SkytilsLoadingPlugin",
                     "FMLCorePluginContainsFMLMod" to true,
                     "ForceLoadAsMod" to true,
-                    "MixinConfigs" to "mixins.skytils.json,mixins.skytils-events.json",
+                    "MixinConfigs" to "mixins.skytils.json,mixins.skytils-events.json,mixins.skytils-init.json",
                     "ModSide" to "CLIENT",
                     "ModType" to "FML",
                     "TweakClass" to "gg.skytils.skytilsmod.tweaker.SkytilsTweaker",
